@@ -18,6 +18,7 @@ import FlagIcon from "@mui/icons-material/Flag";
 import { NextPage } from "next";
 import { useRecoilState } from "recoil";
 import { drawerState } from "../store/common";
+import Link from "next/link";
 
 export const SideMenu: NextPage = () => {
   const toggleDrawer = (open: boolean) => (event: any) => {
@@ -53,14 +54,16 @@ export const SideMenu: NextPage = () => {
         <Divider />
         <List>
           {/* New */}
-          <ListItemButton>
-            <ListItemIcon>
-              <FiberNewIcon sx={{ color: "black" }} />
-            </ListItemIcon>
-            <ListItem key={"New"} disablePadding>
-              <ListItemText primary={"New"} />
-            </ListItem>
-          </ListItemButton>
+          <Link href={"new"}>
+            <ListItemButton>
+              <ListItemIcon>
+                <FiberNewIcon sx={{ color: "black" }} />
+              </ListItemIcon>
+              <ListItem key={"New"} disablePadding>
+                <ListItemText primary={"New"} />
+              </ListItem>
+            </ListItemButton>
+          </Link>
 
           {/* Keep */}
           <ListItemButton>
