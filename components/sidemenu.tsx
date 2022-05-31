@@ -52,6 +52,7 @@ export const SideMenu: NextPage = () => {
 
         <Divider />
         <List>
+          {/* New */}
           <ListItemButton>
             <ListItemIcon>
               <FiberNewIcon sx={{ color: "black" }} />
@@ -60,6 +61,8 @@ export const SideMenu: NextPage = () => {
               <ListItemText primary={"New"} />
             </ListItem>
           </ListItemButton>
+
+          {/* Keep */}
           <ListItemButton>
             <ListItemIcon>
               <FlagIcon sx={{ color: "black" }} />
@@ -68,6 +71,8 @@ export const SideMenu: NextPage = () => {
               <ListItemText primary={"Keep"} />
             </ListItem>
           </ListItemButton>
+
+          {/* Bookmark */}
           <ListItemButton>
             <ListItemIcon>
               <BookmarksIcon sx={{ color: "black" }} />
@@ -76,6 +81,8 @@ export const SideMenu: NextPage = () => {
               <ListItemText primary={"Bookmark"} />
             </ListItem>
           </ListItemButton>
+
+          {/* Settings */}
           <ListItemButton>
             <ListItemIcon>
               <SettingsIcon sx={{ color: "black" }} />
