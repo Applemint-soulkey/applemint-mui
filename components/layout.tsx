@@ -8,52 +8,13 @@ import {
   Container,
   Box,
 } from "@mui/material";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Head from "next/head";
 import MenuIcon from "@mui/icons-material/Menu";
+import { ThemeProvider } from "@mui/material/styles";
 import { SideMenu } from "./sidemenu";
 import { useRecoilState } from "recoil";
 import { drawerState } from "../store/common";
-import Head from "next/head";
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#00bcd4",
-    },
-    secondary: {
-      main: "#f50057",
-    },
-    background: {
-      paper: "#00bcd4",
-    },
-  },
-  components: {
-    MuiListItemIcon: {
-      defaultProps: {
-        color: "secondary",
-      },
-    },
-    MuiListItemText: {
-      defaultProps: {
-        primaryTypographyProps: {
-          variant: "h6",
-          fontFamily: "Pretendard",
-          fontWeight: "800",
-        },
-      },
-    },
-    MuiDrawer: {
-      defaultProps: {
-        variant: "temporary",
-        anchor: "left",
-        open: false,
-        ModalProps: {
-          keepMounted: true,
-        },
-      },
-    },
-  },
-});
+import { theme, toggleDrawer } from "./common";
 
 interface Props {
   window?: () => Window;
@@ -74,15 +35,6 @@ function HideOnScroll(props: Props) {
 }
 
 export default function Layout(props: Props) {
-  const toggleDrawer = (open: boolean) => (event: any) => {
-    if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
-    setDrawerOpen(!open);
-  };
   const [drawerOpen, setDrawerOpen] = useRecoilState(drawerState);
 
   return (
@@ -99,7 +51,7 @@ export default function Layout(props: Props) {
                 edge="start"
                 color="inherit"
                 aria-label="menu"
-                onClick={toggleDrawer(drawerOpen)}
+                onClick={toggleDrawer(drawerOpen, setDrawerOpen)}
               >
                 <MenuIcon />
               </IconButton>

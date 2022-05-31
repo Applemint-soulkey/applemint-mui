@@ -10,36 +10,27 @@ import {
   SwipeableDrawer,
   Typography,
 } from "@mui/material";
+import Link from "next/link";
 import FiberNewIcon from "@mui/icons-material/FiberNew";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
 import SettingsIcon from "@mui/icons-material/Settings";
 import FlagIcon from "@mui/icons-material/Flag";
-
 import { NextPage } from "next";
 import { useRecoilState } from "recoil";
 import { drawerState } from "../store/common";
-import Link from "next/link";
+import { toggleDrawer } from "./common";
 
 export const SideMenu: NextPage = () => {
-  const toggleDrawer = (open: boolean) => (event: any) => {
-    if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
-    setDrawerOpen(!open);
-  };
   const [drawerOpen, setDrawerOpen] = useRecoilState(drawerState);
 
   return (
     <SwipeableDrawer
       anchor="left"
       open={drawerOpen}
-      onClose={toggleDrawer(true)}
-      onOpen={toggleDrawer(false)}
+      onClose={toggleDrawer(true, setDrawerOpen)}
+      onOpen={toggleDrawer(false, setDrawerOpen)}
     >
-      <Box className="w-60" onClick={toggleDrawer(drawerOpen)}>
+      <Box className="w-60" onClick={toggleDrawer(drawerOpen, setDrawerOpen)}>
         <List>
           <ListSubheader className="sm:my-2 my-1">
             <Typography
