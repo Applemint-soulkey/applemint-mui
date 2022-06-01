@@ -15,6 +15,7 @@ import { SideMenu } from "./sidemenu";
 import { useRecoilState } from "recoil";
 import { drawerState } from "../store/common";
 import { theme, toggleDrawer } from "./common";
+import Link from "next/link";
 
 interface Props {
   window?: () => Window;
@@ -55,9 +56,14 @@ export default function Layout(props: Props) {
               >
                 <MenuIcon />
               </IconButton>
-              <Typography className="font-pretend font-black" variant="h5">
-                Applemint
-              </Typography>
+              <Link href={"/"}>
+                <Typography
+                  className="font-pretend font-black cursor-pointer"
+                  variant="h5"
+                >
+                  Applemint
+                </Typography>
+              </Link>
             </Toolbar>
           </AppBar>
         </HideOnScroll>
