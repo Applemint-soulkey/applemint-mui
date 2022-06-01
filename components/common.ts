@@ -9,11 +9,16 @@ export const theme = createTheme({
     secondary: {
       main: "#f50057",
     },
-    background: {
-      paper: "#00bcd4",
-    },
+    // background: {
+    //   paper: "#00bcd4",
+    // },
   },
   components: {
+    MuiTypography: {
+      defaultProps: {
+        fontFamily: "Pretendard",
+      },
+    },
     MuiListItemIcon: {
       defaultProps: {
         color: "secondary",
@@ -28,9 +33,18 @@ export const theme = createTheme({
         },
       },
     },
+    MuiListSubheader: {
+      defaultProps: {
+        style: {
+          backgroundColor: "#00bcd4",
+          fontFamily: "Pretendard",
+          fontWeight: "800",
+        },
+      },
+    },
     MuiDrawer: {
       defaultProps: {
-        variant: "temporary",
+        variant: "persistent",
         anchor: "left",
         open: false,
         ModalProps: {

@@ -1,3 +1,4 @@
+import { Typography } from "@mui/material";
 import { NextPage } from "next";
 import Head from "next/head";
 
@@ -7,7 +8,6 @@ const Bookmark: NextPage = () => {
       <Head>
         <title>Bookmark</title>
       </Head>
-      <h1>Bookmark</h1>
     </div>
   );
 };

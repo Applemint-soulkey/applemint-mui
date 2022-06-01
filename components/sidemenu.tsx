@@ -29,10 +29,11 @@ export const SideMenu: NextPage = () => {
       open={drawerOpen}
       onClose={toggleDrawer(true, setDrawerOpen)}
       onOpen={toggleDrawer(false, setDrawerOpen)}
+      PaperProps={{ style: { backgroundColor: "#00bcd4" } }}
     >
       <Box className="w-60" onClick={toggleDrawer(drawerOpen, setDrawerOpen)}>
         <List>
-          <ListSubheader className="sm:my-2 my-1">
+          <ListSubheader className="sm:my-2 my-1 bg-primary">
             <Typography
               className="font-pretend font-extrabold text-black"
               variant="h5"
