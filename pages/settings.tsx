@@ -1,15 +1,15 @@
 import { NextPage } from "next";
 import Head from "next/head";
 
-const New: NextPage = () => {
+const Settings: NextPage = () => {
   return (
     <div className="container flex flex-col">
       <Head>
-        <title>New</title>
+        <title>Settings</title>
       </Head>
-      <h1>New</h1>
+      <h1>Settings</h1>
     </div>
   );
 };
 
-export default New;
+export default Settings;

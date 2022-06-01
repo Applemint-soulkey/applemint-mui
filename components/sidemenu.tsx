@@ -57,34 +57,40 @@ export const SideMenu: NextPage = () => {
           </Link>
 
           {/* Keep */}
-          <ListItemButton>
-            <ListItemIcon>
-              <FlagIcon sx={{ color: "black" }} />
-            </ListItemIcon>
-            <ListItem key={"Keep"} disablePadding>
-              <ListItemText primary={"Keep"} />
-            </ListItem>
-          </ListItemButton>
+          <Link href={"keep"}>
+            <ListItemButton>
+              <ListItemIcon>
+                <FlagIcon sx={{ color: "black" }} />
+              </ListItemIcon>
+              <ListItem key={"Keep"} disablePadding>
+                <ListItemText primary={"Keep"} />
+              </ListItem>
+            </ListItemButton>
+          </Link>
 
           {/* Bookmark */}
-          <ListItemButton>
-            <ListItemIcon>
-              <BookmarksIcon sx={{ color: "black" }} />
-            </ListItemIcon>
-            <ListItem key={"Bookmark"} disablePadding>
-              <ListItemText primary={"Bookmark"} />
-            </ListItem>
-          </ListItemButton>
+          <Link href={"bookmark"}>
+            <ListItemButton>
+              <ListItemIcon>
+                <BookmarksIcon sx={{ color: "black" }} />
+              </ListItemIcon>
+              <ListItem key={"Bookmark"} disablePadding>
+                <ListItemText primary={"Bookmark"} />
+              </ListItem>
+            </ListItemButton>
+          </Link>
 
           {/* Settings */}
-          <ListItemButton>
-            <ListItemIcon>
-              <SettingsIcon sx={{ color: "black" }} />
-            </ListItemIcon>
-            <ListItem key={"Settings"} disablePadding>
-              <ListItemText primary={"Settings"} />
-            </ListItem>
-          </ListItemButton>
+          <Link href={"settings"}>
+            <ListItemButton>
+              <ListItemIcon>
+                <SettingsIcon sx={{ color: "black" }} />
+              </ListItemIcon>
+              <ListItem key={"Settings"} disablePadding>
+                <ListItemText primary={"Settings"} />
+              </ListItem>
+            </ListItemButton>
+          </Link>
         </List>
       </Box>
     </SwipeableDrawer>
