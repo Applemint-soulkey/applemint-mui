@@ -14,8 +14,10 @@ import BookmarkIcon from "@mui/icons-material/Bookmark";
 import { NextPage } from "next";
 import Head from "next/head";
 import { apiUrl } from "../store/common";
-import { useState } from "react";
 import Link from "next/link";
+import { useInfiniteQuery } from "react-query";
+import { useInView } from "react-intersection-observer";
+import { useEffect } from "react";
 
 interface NewProps {
   id: string;
@@ -33,8 +35,36 @@ interface ItemProps {
   path: string;
 }
 
-const New: NextPage<NewProps> = (props: NewProps) => {
-  const [currentPage, setCurrentPage] = useState(1);
+const New: NextPage<NewProps> = () => {
+  const { ref, inView } = useInView();
+
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [inView]);
+
+  const {
+    status,
+    data,
+    error,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery(
+    "newItems",
+    async ({ pageParam = 0 }) => {
+      const res = await fetch(`${apiUrl}/items/new?cursor=${pageParam}`);
+      const json = await res.json();
+      return {
+        data: json,
+        nextCursor: pageParam + json.length,
+      };
+    },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+    }
+  );
 
   return (
     <div className="container flex flex-col p-3 sm:p-10">
@@ -55,10 +85,36 @@ const New: NextPage<NewProps> = (props: NewProps) => {
         </div>
       </div>
       <Divider />
-      <div id="item_container" className="mt-5 flex flex-col gap-5">
-        {props.items.map((item, idx) => (
-          <ItemCard key={idx} {...item} />
-        ))}
+      <div>
+        {status === "loading" ? (
+          <p>Loading..</p>
+        ) : status === "error" ? (
+          <p>error</p>
+        ) : (
+          <div id="item_container" className="mt-5 flex flex-col gap-5">
+            <>
+              {data?.pages.map((item) =>
+                item.data.map((item: ItemProps) => (
+                  <ItemCard key={item.id} {...item} />
+                ))
+              )}
+            </>
+            <div>
+              <button
+                ref={ref}
+                onClick={() => fetchNextPage()}
+                disabled={!hasNextPage || isFetchingNextPage}
+                className="flex items-center justify-center w-full h-12 bg-gray-200 rounded-md"
+              >
+                {isFetchingNextPage
+                  ? "Loading more..."
+                  : hasNextPage
+                  ? "Load Newer"
+                  : "Nothing more to load"}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -101,14 +157,5 @@ const ItemCard: NextPage<ItemProps> = (item: ItemProps) => {
     </Card>
   );
 };
-
-export async function getServerSideProps() {
-  const res = await fetch(apiUrl + "/items/new");
-  const items = await res.json();
-
-  return {
-    props: { items },
-  };
-}
 
 export default New;
