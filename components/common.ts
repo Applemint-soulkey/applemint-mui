@@ -9,9 +9,6 @@ export const theme = createTheme({
     secondary: {
       main: "#f50057",
     },
-    // background: {
-    //   paper: "#00bcd4",
-    // },
   },
   components: {
     MuiTypography: {
