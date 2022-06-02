@@ -45,12 +45,12 @@ const New: NextPage<NewProps> = () => {
   }, [inView]);
 
   const {
-    status,
     data,
     error,
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
+    status,
   } = useInfiniteQuery(
     "newItems",
     async ({ pageParam = 0 }) => {
@@ -58,7 +58,7 @@ const New: NextPage<NewProps> = () => {
       const json = await res.json();
       return {
         data: json,
-        nextCursor: pageParam + json.length,
+        nextCursor: json.length > 0 ? pageParam + 10 : undefined,
       };
     },
     {
@@ -89,12 +89,12 @@ const New: NextPage<NewProps> = () => {
         {status === "loading" ? (
           <p>Loading..</p>
         ) : status === "error" ? (
-          <p>error</p>
+          <p>{(error as Error).message}</p>
         ) : (
           <div id="item_container" className="mt-5 flex flex-col gap-5">
             <>
               {data?.pages.map((item) =>
-                item.data.map((item: ItemProps) => (
+                item?.data.map((item: ItemProps) => (
                   <ItemCard key={item.id} {...item} />
                 ))
               )}
