@@ -1,10 +1,8 @@
-import type { NextPage } from 'next'
+import type { NextPage } from "next";
+import New from "./new";
 
 const Home: NextPage = () => {
-  return (
-    <>
-    </>
-  )
-}
+  return <New />;
+};
 
-export default Home
+export default Home;
