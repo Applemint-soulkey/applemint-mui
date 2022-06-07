@@ -1,7 +1,6 @@
 import {
   Avatar,
   Chip,
-  CircularProgress,
   Collapse,
   Divider,
   IconButton,
@@ -14,15 +13,9 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import { NextPage } from "next";
 import Head from "next/head";
 import { apiUrl } from "../store/common";
-import { useInfiniteQuery, useQuery } from "react-query";
-import { useInView } from "react-intersection-observer";
-import { useEffect, useState } from "react";
-import ItemCard from "./new/itemCard";
-
-export interface NewProps {
-  id: string;
-  items: ItemProps[];
-}
+import { useQuery } from "react-query";
+import { useState } from "react";
+import ItemContainer from "./new/itemContainer";
 
 export interface ItemProps {
   id: string;
@@ -38,11 +31,11 @@ export interface ItemProps {
 const New: NextPage = () => {
   const [filterSelected, setFilterSelected] = useState<string[]>([]);
   const [filterOpen, setFilterOpen] = useState(true);
-  const { status, data, error } = useQuery("newInfo", async () => {
+  const { data } = useQuery("newInfo", async () => {
     const res = await fetch(`${apiUrl}/collection/info/new`);
     const json = await res.json();
     return {
-      total: json.totalCount,
+      totalCount: json.totalCount,
     };
   });
   return (
@@ -58,7 +51,7 @@ const New: NextPage = () => {
           <Typography variant="h6" className="mb-1">
             Items:{" "}
             <span id="item_count" className="font-bold">
-              {data?.total}
+              {data?.totalCount}
             </span>
           </Typography>
           <IconButton
@@ -97,75 +90,6 @@ const New: NextPage = () => {
       </Collapse>
       <Divider />
       <ItemContainer />
-    </div>
-  );
-};
-
-const ItemContainer: NextPage = () => {
-  const { ref, inView } = useInView();
-
-  useEffect(() => {
-    if (inView) {
-      fetchNextPage();
-    }
-  }, [inView]);
-
-  const {
-    data,
-    error,
-    isFetchingNextPage,
-    fetchNextPage,
-    hasNextPage,
-    status,
-  } = useInfiniteQuery(
-    "newItems",
-    async ({ pageParam = 0 }) => {
-      const res = await fetch(`${apiUrl}/items/new?cursor=${pageParam}`);
-      const json = await res.json();
-      return {
-        data: json,
-        nextCursor: json.length > 0 ? pageParam + 10 : undefined,
-      };
-    },
-    {
-      getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-    }
-  );
-  return (
-    <div>
-      {status === "loading" ? (
-        <div id="loading_container" className="mt-5 flex justify-center">
-          <CircularProgress />
-        </div>
-      ) : status === "error" ? (
-        <p>{(error as Error).message}</p>
-      ) : (
-        <div id="item_container" className="mt-5 flex flex-col gap-5">
-          <>
-            {data?.pages.map((item) =>
-              item?.data.map((item: ItemProps) => (
-                <ItemCard key={item.id} {...item} />
-              ))
-            )}
-          </>
-          <div>
-            <button
-              ref={ref}
-              onClick={() => fetchNextPage()}
-              disabled={!hasNextPage || isFetchingNextPage}
-              className="flex items-center justify-center w-full h-12 bg-gray-200 rounded-md"
-            >
-              {isFetchingNextPage ? (
-                <CircularProgress />
-              ) : hasNextPage ? (
-                <CircularProgress />
-              ) : (
-                <></>
-              )}
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
