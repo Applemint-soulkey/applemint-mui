@@ -4,8 +4,17 @@ import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "react-query";
 import { apiUrl } from "../../store/common";
-import { ItemProps } from "../new";
+import { ItemProps } from "./common";
 import ItemCard from "./itemCard";
+
+const handleNewItemsFetch = async ({ pageParam = 0 }) => {
+  const res = await fetch(`${apiUrl}/items/new?cursor=${pageParam}`);
+  const json = await res.json();
+  return {
+    data: json,
+    nextCursor: json.length > 0 ? pageParam + 10 : undefined,
+  };
+};
 
 const ItemContainer: NextPage = () => {
   const { ref, inView } = useInView();
@@ -23,20 +32,9 @@ const ItemContainer: NextPage = () => {
     fetchNextPage,
     hasNextPage,
     status,
-  } = useInfiniteQuery(
-    "newItems",
-    async ({ pageParam = 0 }) => {
-      const res = await fetch(`${apiUrl}/items/new?cursor=${pageParam}`);
-      const json = await res.json();
-      return {
-        data: json,
-        nextCursor: json.length > 0 ? pageParam + 10 : undefined,
-      };
-    },
-    {
-      getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-    }
-  );
+  } = useInfiniteQuery("newItems", handleNewItemsFetch, {
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+  });
   return (
     <div>
       {status === "loading" ? (

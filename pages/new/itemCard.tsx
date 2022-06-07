@@ -10,10 +10,9 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import FlagIcon from "@mui/icons-material/Flag";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import { NextPage } from "next";
 import Link from "next/link";
-import { ItemProps } from "../new";
+import { ItemProps } from "./common";
 
 const ItemCard: NextPage<ItemProps> = (item: ItemProps) => {
   return (

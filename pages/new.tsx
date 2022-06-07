@@ -17,17 +17,6 @@ import { useQuery } from "react-query";
 import { useState } from "react";
 import ItemContainer from "./new/itemContainer";
 
-export interface ItemProps {
-  id: string;
-  text_content: string;
-  url: string;
-  domain: string;
-  tags: string[];
-  timestamp: string;
-  source: string;
-  path: string;
-}
-
 const New: NextPage = () => {
   const [filterSelected, setFilterSelected] = useState<string[]>([]);
   const [filterOpen, setFilterOpen] = useState(true);
