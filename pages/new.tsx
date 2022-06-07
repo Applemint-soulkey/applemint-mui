@@ -1,30 +1,30 @@
 import {
-  Card,
-  CardActionArea,
-  CardActions,
-  CardContent,
+  Avatar,
   Chip,
+  CircularProgress,
+  Collapse,
   Divider,
   IconButton,
+  Stack,
   Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import FlagIcon from "@mui/icons-material/Flag";
-import BookmarkIcon from "@mui/icons-material/Bookmark";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
+
 import { NextPage } from "next";
 import Head from "next/head";
 import { apiUrl } from "../store/common";
-import Link from "next/link";
-import { useInfiniteQuery } from "react-query";
+import { useInfiniteQuery, useQuery } from "react-query";
 import { useInView } from "react-intersection-observer";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import ItemCard from "./new/itemCard";
 
-interface NewProps {
+export interface NewProps {
   id: string;
   items: ItemProps[];
 }
 
-interface ItemProps {
+export interface ItemProps {
   id: string;
   text_content: string;
   url: string;
@@ -35,7 +35,73 @@ interface ItemProps {
   path: string;
 }
 
-const New: NextPage<NewProps> = () => {
+const New: NextPage = () => {
+  const [filterSelected, setFilterSelected] = useState<string[]>([]);
+  const [filterOpen, setFilterOpen] = useState(true);
+  const { status, data, error } = useQuery("newInfo", async () => {
+    const res = await fetch(`${apiUrl}/collection/info/new`);
+    const json = await res.json();
+    return {
+      total: json.totalCount,
+    };
+  });
+  return (
+    <div className="container flex flex-col p-3 sm:p-10">
+      <Head>
+        <title>New</title>
+      </Head>
+      <div id="info_container" className="flex items-end">
+        <Typography variant="h3" className="flex-1 font-extrabold">
+          New
+        </Typography>
+        <div id="info_breadcumb" className="flex items-end">
+          <Typography variant="h6" className="mb-1">
+            Items:{" "}
+            <span id="item_count" className="font-bold">
+              {data?.total}
+            </span>
+          </Typography>
+          <IconButton
+            onClick={() => {
+              setFilterOpen(!filterOpen);
+            }}
+          >
+            <FilterAltIcon />
+          </IconButton>
+        </div>
+      </div>
+      <Collapse in={filterOpen}>
+        <div className="py-3">
+          <Stack direction="row">
+            <Chip
+              id="filter_battlepage"
+              avatar={<Avatar>32</Avatar>}
+              label="battlepage.com"
+              onClick={() => {
+                const newFilter = filterSelected.includes("battlepage.com")
+                  ? filterSelected.filter((x) => x !== "battlepage.com")
+                  : [...filterSelected, "battlepage.com"];
+                setFilterSelected(newFilter);
+              }}
+              onDelete={() => {}}
+              deleteIcon={
+                filterSelected.includes("battlepage.com") ? (
+                  <DeleteIcon />
+                ) : (
+                  <></>
+                )
+              }
+            />
+          </Stack>
+        </div>
+      </Collapse>
+      <Divider />
+      <ItemContainer />
+    </div>
+  );
+};
+
+const ItemContainer: NextPage = () => {
   const { ref, inView } = useInView();
 
   useEffect(() => {
@@ -65,96 +131,42 @@ const New: NextPage<NewProps> = () => {
       getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
     }
   );
-
   return (
-    <div className="container flex flex-col p-3 sm:p-10">
-      <Head>
-        <title>New</title>
-      </Head>
-      <div id="info_container" className="flex items-end">
-        <Typography variant="h3" className="flex-1 font-extrabold">
-          New
-        </Typography>
-        <div id="info_breadcumb" className="">
-          <Typography variant="h6">
-            Items:{" "}
-            <span id="item_count" className="font-bold">
-              0
-            </span>
-          </Typography>
+    <div>
+      {status === "loading" ? (
+        <div id="loading_container" className="mt-5 flex justify-center">
+          <CircularProgress />
         </div>
-      </div>
-      <Divider />
-      <div>
-        {status === "loading" ? (
-          <p>Loading..</p>
-        ) : status === "error" ? (
-          <p>{(error as Error).message}</p>
-        ) : (
-          <div id="item_container" className="mt-5 flex flex-col gap-5">
-            <>
-              {data?.pages.map((item) =>
-                item?.data.map((item: ItemProps) => (
-                  <ItemCard key={item.id} {...item} />
-                ))
+      ) : status === "error" ? (
+        <p>{(error as Error).message}</p>
+      ) : (
+        <div id="item_container" className="mt-5 flex flex-col gap-5">
+          <>
+            {data?.pages.map((item) =>
+              item?.data.map((item: ItemProps) => (
+                <ItemCard key={item.id} {...item} />
+              ))
+            )}
+          </>
+          <div>
+            <button
+              ref={ref}
+              onClick={() => fetchNextPage()}
+              disabled={!hasNextPage || isFetchingNextPage}
+              className="flex items-center justify-center w-full h-12 bg-gray-200 rounded-md"
+            >
+              {isFetchingNextPage ? (
+                <CircularProgress />
+              ) : hasNextPage ? (
+                <CircularProgress />
+              ) : (
+                <></>
               )}
-            </>
-            <div>
-              <button
-                ref={ref}
-                onClick={() => fetchNextPage()}
-                disabled={!hasNextPage || isFetchingNextPage}
-                className="flex items-center justify-center w-full h-12 bg-gray-200 rounded-md"
-              >
-                {isFetchingNextPage
-                  ? "Loading more..."
-                  : hasNextPage
-                  ? "Load Newer"
-                  : "Nothing more to load"}
-              </button>
-            </div>
+            </button>
           </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-const ItemCard: NextPage<ItemProps> = (item: ItemProps) => {
-  return (
-    <Card>
-      <Link href={item.url} passHref>
-        <a target={`_blank`}>
-          <CardActionArea>
-            <CardContent>
-              <Typography variant="h4">
-                <span className="font-semibold">
-                  {item.text_content !== "" ? item.text_content : item.domain}
-                </span>
-              </Typography>
-              <Typography variant="body1">
-                <span>{item.url}</span>
-              </Typography>
-            </CardContent>
-          </CardActionArea>
-        </a>
-      </Link>
-
-      <CardActions className="flex">
-        <div className="flex-1">
-          <Chip label={item.domain} />
         </div>
-        <IconButton>
-          <DeleteIcon />
-        </IconButton>
-        <IconButton>
-          <FlagIcon />
-        </IconButton>
-        <IconButton>
-          <BookmarkIcon />
-        </IconButton>
-      </CardActions>
-    </Card>
+      )}
+    </div>
   );
 };
 
