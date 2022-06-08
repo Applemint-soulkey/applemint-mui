@@ -3,12 +3,15 @@ import { NextPage } from "next";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "react-query";
-import { apiUrl } from "../../store/common";
+import { useRecoilValue } from "recoil";
+import { apiUrl, filterListState } from "../../store/common";
 import { ItemProps } from "./common";
 import ItemCard from "./itemCard";
 
-const handleNewItemsFetch = async ({ pageParam = 0 }) => {
-  const res = await fetch(`${apiUrl}/items/new?cursor=${pageParam}`);
+const handleNewItemsFetch = async ({ pageParam = 0 }, filter = "") => {
+  const res = await fetch(
+    `${apiUrl}/items/new?cursor=${pageParam}&filter=${filter}`
+  );
   const json = await res.json();
   return {
     data: json,
@@ -18,12 +21,7 @@ const handleNewItemsFetch = async ({ pageParam = 0 }) => {
 
 const ItemContainer: NextPage = () => {
   const { ref, inView } = useInView();
-
-  useEffect(() => {
-    if (inView) {
-      fetchNextPage();
-    }
-  }, [inView]);
+  const filter = useRecoilValue(filterListState);
 
   const {
     data,
@@ -32,12 +30,26 @@ const ItemContainer: NextPage = () => {
     fetchNextPage,
     hasNextPage,
     status,
-  } = useInfiniteQuery("newItems", handleNewItemsFetch, {
-    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-  });
+    refetch,
+    isRefetching,
+  } = useInfiniteQuery(
+    "newItems",
+    (pageParam) => handleNewItemsFetch(pageParam, filter[0]),
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+    }
+  );
+
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+    refetch();
+  }, [inView, filter]);
+
   return (
     <div>
-      {status === "loading" ? (
+      {status === "loading" || isRefetching ? (
         <div id="loading_container" className="mt-5 flex justify-center">
           <CircularProgress />
         </div>
