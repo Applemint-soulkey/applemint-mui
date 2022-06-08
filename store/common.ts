@@ -8,4 +8,9 @@ const drawerState = atom({
   default: false,
 });
 
-export { drawerState, apiUrl };
+const filterListState = atom({
+  key: "filterListState",
+  default: [] as string[],
+});
+
+export { drawerState, filterListState, apiUrl };
