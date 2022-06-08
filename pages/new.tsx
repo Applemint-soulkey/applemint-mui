@@ -1,46 +1,25 @@
 import {
-  Avatar,
-  Chip,
   Collapse,
   Divider,
   IconButton,
   Stack,
   Typography,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 
-import { NextPage } from "next";
 import Head from "next/head";
-import { apiUrl, filterListState } from "../store/common";
+import { NextPage } from "next";
+
 import { useQuery } from "react-query";
 import { useState } from "react";
+import { useRecoilValue } from "recoil";
+
+import { apiUrl, filterListState } from "../store/common";
 import ItemContainer from "./new/itemContainer";
-import { useRecoilState } from "recoil";
-
-const ChipFilter: NextPage<{ label: string; count: number }> = ({
-  label,
-  count,
-}) => {
-  const [filterSelected, setFilterSelected] = useRecoilState(filterListState);
-
-  return (
-    <Chip
-      id={"filter_chip_" + label}
-      avatar={<Avatar>{count}</Avatar>}
-      label={label}
-      onClick={() => {
-        const newFilter = filterSelected.includes(label) ? [] : [label];
-        console.log(newFilter);
-        setFilterSelected(newFilter);
-      }}
-      onDelete={() => {}}
-      deleteIcon={filterSelected.includes(label) ? <DeleteIcon /> : <></>}
-    />
-  );
-};
+import ChipFilter from "./new/chipFilter";
 
 const New: NextPage = () => {
+  const filterSelected = useRecoilValue(filterListState);
   const [filterOpen, setFilterOpen] = useState(true);
   const { data } = useQuery("newInfo", async () => {
     const res = await fetch(`${apiUrl}/collection/info/new`);
@@ -60,7 +39,12 @@ const New: NextPage = () => {
           <Typography variant="h6" className="mb-1">
             Items:{" "}
             <span id="item_count" className="font-bold">
-              {data?.totalCount}
+              {filterSelected.length == 0
+                ? data?.totalCount
+                : data?.groupInfos.find(
+                    (group: { Domain: string; Count: number }) =>
+                      group.Domain === filterSelected[0]
+                  )?.Count}
             </span>
           </Typography>
           <IconButton
