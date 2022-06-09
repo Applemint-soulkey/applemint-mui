@@ -26,6 +26,7 @@ const New: NextPage = () => {
     const json = await res.json();
     return json;
   });
+
   return (
     <div className="container flex flex-col p-3 sm:p-10">
       <Head>
