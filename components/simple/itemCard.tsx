@@ -12,7 +12,7 @@ import FlagIcon from "@mui/icons-material/Flag";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import { NextPage } from "next";
 import Link from "next/link";
-import { deleteCall, ItemProps } from "./common";
+import { deleteCall, ItemProps, keepCall } from "./common";
 import { QueryClient, useMutation, useQueryClient } from "react-query";
 
 const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
@@ -30,6 +30,13 @@ const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
       onSettled: () => handleOnSuccess(queryClient, collectionName),
     }
   );
+
+  const keepMutation = useMutation(() => keepCall(itemData, collectionName), {
+    onMutate: async () => await handleOnMutate(queryClient, collectionName),
+    onSuccess: () => handleOnSuccess(queryClient, collectionName),
+    onError: (err) => handleOnError(queryClient, collectionName, err),
+    onSettled: () => handleOnSuccess(queryClient, collectionName),
+  });
 
   return (
     <Card>
@@ -59,9 +66,13 @@ const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
         <IconButton onClick={() => deleteMutation.mutate()}>
           <DeleteIcon />
         </IconButton>
-        <IconButton>
-          <FlagIcon />
-        </IconButton>
+        {collectionName === "keep" ? (
+          <></>
+        ) : (
+          <IconButton onClick={() => keepMutation.mutate()}>
+            <FlagIcon />
+          </IconButton>
+        )}
         <IconButton>
           <BookmarkIcon />
         </IconButton>
@@ -84,7 +95,7 @@ const handleOnMutate = async (
 const handleOnSuccess = (queryClient: QueryClient, collectionName: string) => {
   console.log("delete success");
   queryClient.invalidateQueries(collectionName + "Items");
-  queryClient.invalidateQueries(collectionName + "newInfo");
+  queryClient.invalidateQueries(collectionName + "Info");
 };
 
 const handleOnError = (

@@ -10,9 +10,13 @@ import ItemCard from "./itemCard";
 
 const PAGE_SIZE = 20;
 
-const handleNewItemsFetch = async ({ pageParam = 0 }, filter = "") => {
+const handleNewItemsFetch = async (
+  { pageParam = 0 },
+  collectionName: string,
+  filter = ""
+) => {
   const res = await fetch(
-    `${apiUrl}/items/new?cursor=${pageParam}&filter=${filter}`
+    `${apiUrl}/items/${collectionName}?cursor=${pageParam}&filter=${filter}`
   );
   const json = await res.json();
   return {
@@ -39,7 +43,7 @@ const ItemContainer: NextPage<{ collectionName: string }> = ({
     remove,
   } = useInfiniteQuery(
     collectionName + "Items",
-    (pageParam) => handleNewItemsFetch(pageParam, filter[0]),
+    (pageParam) => handleNewItemsFetch(pageParam, collectionName, filter[0]),
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
     }
@@ -71,7 +75,11 @@ const ItemContainer: NextPage<{ collectionName: string }> = ({
           <>
             {data?.pages.map((item) =>
               item?.data.map((item: ItemProps) => (
-                <ItemCard key={item.id} itemData={item} collectionName="new" />
+                <ItemCard
+                  key={item.id}
+                  itemData={item}
+                  collectionName={collectionName}
+                />
               ))
             )}
           </>
