@@ -31,7 +31,7 @@ const ItemContainer: NextPage = () => {
     hasNextPage,
     status,
     refetch,
-    isRefetching,
+    remove,
   } = useInfiniteQuery(
     "newItems",
     (pageParam) => handleNewItemsFetch(pageParam, filter[0]),
@@ -44,12 +44,17 @@ const ItemContainer: NextPage = () => {
     if (inView) {
       fetchNextPage();
     }
+  }, [inView]);
+
+  // Reload when filter changes
+  useEffect(() => {
+    remove();
     refetch();
-  }, [inView, filter]);
+  }, [filter]);
 
   return (
     <div>
-      {status === "loading" || isRefetching ? (
+      {status === "loading" ? (
         <div id="loading_container" className="mt-5 flex justify-center">
           <CircularProgress />
         </div>
