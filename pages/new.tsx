@@ -20,7 +20,7 @@ import ChipFilter from "./new/chipFilter";
 
 const New: NextPage = () => {
   const filterSelected = useRecoilValue(filterListState);
-  const [filterOpen, setFilterOpen] = useState(true);
+  const [filterOpen, setFilterOpen] = useState(false);
   const { data } = useQuery("newInfo", async () => {
     const res = await fetch(`${apiUrl}/collection/info/new`);
     const json = await res.json();
@@ -53,7 +53,9 @@ const New: NextPage = () => {
               setFilterOpen(!filterOpen);
             }}
           >
-            <FilterAltIcon />
+            <FilterAltIcon
+              color={filterSelected.length > 0 ? "secondary" : "disabled"}
+            />
           </IconButton>
         </div>
       </div>
