@@ -8,6 +8,8 @@ import { apiUrl, filterListState } from "../../store/common";
 import { ItemProps } from "./common";
 import ItemCard from "./itemCard";
 
+const PAGE_SIZE = 20;
+
 const handleNewItemsFetch = async ({ pageParam = 0 }, filter = "") => {
   const res = await fetch(
     `${apiUrl}/items/new?cursor=${pageParam}&filter=${filter}`
@@ -15,7 +17,7 @@ const handleNewItemsFetch = async ({ pageParam = 0 }, filter = "") => {
   const json = await res.json();
   return {
     data: json,
-    nextCursor: json.length > 0 ? pageParam + 10 : undefined,
+    nextCursor: json.length > 0 ? pageParam + PAGE_SIZE : undefined,
   };
 };
 
@@ -23,6 +25,7 @@ const ItemContainer: NextPage = () => {
   const { ref, inView } = useInView();
   const filter = useRecoilValue(filterListState);
 
+  // Declare a new query hook
   const {
     data,
     error,
@@ -40,6 +43,7 @@ const ItemContainer: NextPage = () => {
     }
   );
 
+  // Call fetchNextPage when the user scrolls to the bottom of the page.
   useEffect(() => {
     if (inView) {
       fetchNextPage();
