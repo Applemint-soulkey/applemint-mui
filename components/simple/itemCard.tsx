@@ -12,9 +12,8 @@ import FlagIcon from "@mui/icons-material/Flag";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import { NextPage } from "next";
 import Link from "next/link";
-import { ItemProps } from "./common";
+import { deleteCall, ItemProps } from "./common";
 import { QueryClient, useMutation, useQueryClient } from "react-query";
-import { apiUrl } from "../../store/common";
 
 const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
   itemData,
@@ -69,12 +68,6 @@ const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
       </CardActions>
     </Card>
   );
-};
-
-const deleteCall = (item: ItemProps, collectionName: string) => {
-  return fetch(`${apiUrl}/item/${collectionName}/${item.id}`, {
-    method: "DELETE",
-  });
 };
 
 const handleOnMutate = async (

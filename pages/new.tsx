@@ -15,8 +15,8 @@ import { useState } from "react";
 import { useRecoilValue } from "recoil";
 
 import { apiUrl, filterListState } from "../store/common";
-import ItemContainer from "./new/itemContainer";
-import ChipFilter from "./new/chipFilter";
+import ChipFilter from "../components/simple/chipFilter";
+import ItemContainer from "../components/simple/itemContainer";
 
 const New: NextPage = () => {
   const collectionName = "new";
