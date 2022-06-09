@@ -13,8 +13,40 @@ import BookmarkIcon from "@mui/icons-material/Bookmark";
 import { NextPage } from "next";
 import Link from "next/link";
 import { ItemProps } from "./common";
+import { useMutation, useQueryClient } from "react-query";
+import { apiUrl } from "../../store/common";
 
 const ItemCard: NextPage<ItemProps> = (item: ItemProps) => {
+  const queryClient = useQueryClient();
+  const deleteMutation = useMutation(
+    (item: ItemProps) => {
+      return fetch(`${apiUrl}/item/new/${item.id}`, {
+        method: "DELETE",
+      });
+    },
+    {
+      onMutate: async (item: ItemProps) => {
+        await queryClient.cancelQueries("newItems");
+        const previouseItems = await queryClient.getQueryData("newItems");
+        return { previouseItems };
+      },
+      onSuccess: async () => {
+        console.log("delete success");
+        queryClient.invalidateQueries("newItems");
+        queryClient.invalidateQueries("newInfo");
+      },
+      onError: (err, item, context) => {
+        console.log(err);
+        queryClient.setQueryData("newItems", context?.previouseItems);
+        //TODO show Eror Message Popup
+      },
+      onSettled: () => {
+        console.log("delete settled");
+        queryClient.invalidateQueries("newItems");
+      },
+    }
+  );
+
   return (
     <Card>
       <Link href={item.url} passHref>
@@ -38,7 +70,7 @@ const ItemCard: NextPage<ItemProps> = (item: ItemProps) => {
         <div className="flex-1">
           <Chip label={item.domain} />
         </div>
-        <IconButton>
+        <IconButton onClick={() => deleteMutation.mutate(item)}>
           <DeleteIcon />
         </IconButton>
         <IconButton>
