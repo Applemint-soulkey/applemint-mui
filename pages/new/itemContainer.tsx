@@ -3,18 +3,25 @@ import { NextPage } from "next";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "react-query";
-import { apiUrl } from "../../store/common";
-import { ItemProps } from "../new";
+import { useRecoilValue } from "recoil";
+import { apiUrl, filterListState } from "../../store/common";
+import { ItemProps } from "./common";
 import ItemCard from "./itemCard";
+
+const handleNewItemsFetch = async ({ pageParam = 0 }, filter = "") => {
+  const res = await fetch(
+    `${apiUrl}/items/new?cursor=${pageParam}&filter=${filter}`
+  );
+  const json = await res.json();
+  return {
+    data: json,
+    nextCursor: json.length > 0 ? pageParam + 10 : undefined,
+  };
+};
 
 const ItemContainer: NextPage = () => {
   const { ref, inView } = useInView();
-
-  useEffect(() => {
-    if (inView) {
-      fetchNextPage();
-    }
-  }, [inView]);
+  const filter = useRecoilValue(filterListState);
 
   const {
     data,
@@ -23,20 +30,28 @@ const ItemContainer: NextPage = () => {
     fetchNextPage,
     hasNextPage,
     status,
+    refetch,
+    remove,
   } = useInfiniteQuery(
     "newItems",
-    async ({ pageParam = 0 }) => {
-      const res = await fetch(`${apiUrl}/items/new?cursor=${pageParam}`);
-      const json = await res.json();
-      return {
-        data: json,
-        nextCursor: json.length > 0 ? pageParam + 10 : undefined,
-      };
-    },
+    (pageParam) => handleNewItemsFetch(pageParam, filter[0]),
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
     }
   );
+
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [inView]);
+
+  // Reload when filter changes
+  useEffect(() => {
+    remove();
+    refetch();
+  }, [filter]);
+
   return (
     <div>
       {status === "loading" ? (
