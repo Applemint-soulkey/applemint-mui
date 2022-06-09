@@ -21,7 +21,9 @@ const handleNewItemsFetch = async ({ pageParam = 0 }, filter = "") => {
   };
 };
 
-const ItemContainer: NextPage = () => {
+const ItemContainer: NextPage<{ collectionName: string }> = ({
+  collectionName,
+}) => {
   const { ref, inView } = useInView();
   const filter = useRecoilValue(filterListState);
 
@@ -36,7 +38,7 @@ const ItemContainer: NextPage = () => {
     refetch,
     remove,
   } = useInfiniteQuery(
-    "newItems",
+    collectionName + "Items",
     (pageParam) => handleNewItemsFetch(pageParam, filter[0]),
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
@@ -69,7 +71,7 @@ const ItemContainer: NextPage = () => {
           <>
             {data?.pages.map((item) =>
               item?.data.map((item: ItemProps) => (
-                <ItemCard key={item.id} {...item} />
+                <ItemCard key={item.id} itemData={item} collectionName="new" />
               ))
             )}
           </>

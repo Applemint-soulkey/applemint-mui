@@ -19,10 +19,11 @@ import ItemContainer from "./new/itemContainer";
 import ChipFilter from "./new/chipFilter";
 
 const New: NextPage = () => {
+  const collectionName = "new";
   const filterSelected = useRecoilValue(filterListState);
   const [filterOpen, setFilterOpen] = useState(false);
-  const { data } = useQuery("newInfo", async () => {
-    const res = await fetch(`${apiUrl}/collection/info/new`);
+  const { data } = useQuery(collectionName + "Info", async () => {
+    const res = await fetch(`${apiUrl}/collection/info/${collectionName}`);
     const json = await res.json();
     return json;
   });
@@ -73,7 +74,7 @@ const New: NextPage = () => {
         </div>
       </Collapse>
       <Divider />
-      <ItemContainer />
+      <ItemContainer collectionName={collectionName} />
     </div>
   );
 };
