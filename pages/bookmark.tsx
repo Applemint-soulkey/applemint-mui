@@ -3,6 +3,7 @@ import { NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
 import { useQuery } from "react-query";
+import { getBookmarkListCall } from "../components/simple/api";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -39,11 +40,12 @@ function a11yProps(index: number) {
 
 const Bookmark: NextPage = () => {
   const [value, setValue] = useState(0);
-  const { data } = useQuery("bookmark_list");
+  const { data } = useQuery("bookmark_list", getBookmarkListCall, {});
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+  console.log(data);
 
   return (
     <div className="container flex flex-col p-3 sm:p-10">
@@ -69,42 +71,15 @@ const Bookmark: NextPage = () => {
           aria-label="Vertical tabs example"
           sx={{ borderRight: 1, borderColor: "divider" }}
         >
-          <Tab label="Item One" {...a11yProps(0)} />
-          <Tab label="Item Two" {...a11yProps(1)} />
-          <Tab label="Item Three" {...a11yProps(2)} />
-          <Tab label="Item Four" {...a11yProps(3)} />
-          <Tab label="Item Five" {...a11yProps(4)} />
-          <Tab label="Item Six" {...a11yProps(5)} />
-          <Tab label="Item Seven" {...a11yProps(6)} />
-          <IconButton>
-            <Typography variant="h6" className="mb-1">
-              <span id="item_count" className="font-bold">
-                7
-              </span>
-            </Typography>
-          </IconButton>
+          {data?.map((item: any, index: number) => (
+            <Tab key={item.id} label={item.Path} {...a11yProps(index)} />
+          ))}
         </Tabs>
-        <TabPanel value={value} index={0}>
-          Item One
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          Item Two
-        </TabPanel>
-        <TabPanel value={value} index={2}>
-          Item Three
-        </TabPanel>
-        <TabPanel value={value} index={3}>
-          Item Four
-        </TabPanel>
-        <TabPanel value={value} index={4}>
-          Item Five
-        </TabPanel>
-        <TabPanel value={value} index={5}>
-          Item Six
-        </TabPanel>
-        <TabPanel value={value} index={6}>
-          Item Seven
-        </TabPanel>
+        {data?.map((item: any, index: number) => (
+          <TabPanel key={item.id} value={value} index={index}>
+            <Typography>{item.Path}</Typography>
+          </TabPanel>
+        ))}
       </Box>
     </div>
   );

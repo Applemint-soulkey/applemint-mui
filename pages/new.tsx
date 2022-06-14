@@ -16,21 +16,26 @@ import { useRecoilState, useRecoilValue } from "recoil";
 
 import {
   apiUrl,
+  bookmarkModalOpenState,
   filterListState,
-  raindropItemState,
+  ModalItemState,
   raindropModalOpenState,
 } from "../store/common";
 import ChipFilter from "../components/simple/chipFilter";
 import ItemContainer from "../components/simple/itemContainer";
 import RaindropModal from "../components/raindropModal";
+import BookmarkModal from "../components/bookmarkModal";
 
 const New: NextPage = () => {
   const collectionName = "new";
   const filterSelected = useRecoilValue(filterListState);
   const [filterOpen, setFilterOpen] = useState(false);
-  const raindropItemData = useRecoilValue(raindropItemState);
+  const ModalItemData = useRecoilValue(ModalItemState);
   const [raindropModalOpen, setRaindropModalOpen] = useRecoilState(
     raindropModalOpenState
+  );
+  const [bookmarkModalOpen, setBookmarkModalOpen] = useRecoilState(
+    bookmarkModalOpenState
   );
   const { data } = useQuery(collectionName + "Info", async () => {
     const res = await fetch(`${apiUrl}/collection/info/${collectionName}`);
@@ -88,7 +93,12 @@ const New: NextPage = () => {
       <RaindropModal
         raindropOpen={raindropModalOpen}
         setRaindropOpen={setRaindropModalOpen}
-        data={raindropItemData}
+        data={ModalItemData}
+      />
+      <BookmarkModal
+        bookmarkOpen={bookmarkModalOpen}
+        setBookmarkOpen={setBookmarkModalOpen}
+        data={ModalItemData}
       />
     </div>
   );

@@ -16,18 +16,28 @@ import Link from "next/link";
 import { deleteCall, ItemProps, keepCall } from "./api";
 import { QueryClient, useMutation, useQueryClient } from "react-query";
 import { useSetRecoilState } from "recoil";
-import { raindropItemState, raindropModalOpenState } from "../../store/common";
+import {
+  bookmarkModalOpenState,
+  ModalItemState,
+  raindropModalOpenState,
+} from "../../store/common";
 
 const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
   itemData,
   collectionName,
 }) => {
   const setRaindropModalOpen = useSetRecoilState(raindropModalOpenState);
-  const setRaindropItem = useSetRecoilState(raindropItemState);
+  const setBookmarkModalOpen = useSetRecoilState(bookmarkModalOpenState);
+  const setModalItemData = useSetRecoilState(ModalItemState);
   const queryClient = useQueryClient();
   const sendToRaindropDialog = (item: ItemProps) => {
-    setRaindropItem(item);
+    setModalItemData(item);
     setRaindropModalOpen(true);
+  };
+
+  const sendToBookmarkDialog = (item: ItemProps) => {
+    setModalItemData(item);
+    setBookmarkModalOpen(true);
   };
 
   const deleteMutation = useMutation(
@@ -82,7 +92,7 @@ const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
             <FlagIcon />
           </IconButton>
         )}
-        <IconButton>
+        <IconButton onClick={() => sendToBookmarkDialog(itemData)}>
           <BookmarkIcon />
         </IconButton>
         <IconButton onClick={() => sendToRaindropDialog(itemData)}>
@@ -122,6 +132,3 @@ const handleOnError = (
 };
 
 export default ItemCard;
-function raindropModalState(raindropModalState: any) {
-  throw new Error("Function not implemented.");
-}

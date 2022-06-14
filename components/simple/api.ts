@@ -36,4 +36,16 @@ const makeRaindropCall = (item: ItemProps, collectionId: string) => {
   });
 };
 
-export { deleteCall, keepCall, raindropCollectionListCall, makeRaindropCall };
+const getBookmarkListCall = async () => {
+  const response = await fetch(`${apiUrl}/item/bookmark`);
+  const json = await response.json();
+  return json;
+};
+
+export {
+  deleteCall,
+  keepCall,
+  raindropCollectionListCall,
+  makeRaindropCall,
+  getBookmarkListCall,
+};

@@ -24,9 +24,14 @@ const raindropModalOpenState = atom({
   default: false,
 });
 
-const raindropItemState = atom({
-  key: "raindropItemState",
+const ModalItemState = atom({
+  key: "ModalItemState",
   default: {} as ItemProps,
+});
+
+const bookmarkModalOpenState = atom({
+  key: "bookmarkModalOpenState",
+  default: false,
 });
 
 export {
@@ -34,6 +39,7 @@ export {
   filterListState,
   raindropCollectionListState,
   raindropModalOpenState,
-  raindropItemState,
+  ModalItemState,
+  bookmarkModalOpenState,
   apiUrl,
 };
