@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import { useQuery } from "react-query";
 import { useSetRecoilState } from "recoil";
-import { raindropCollectionListCall } from "../components/simple/common";
+import { raindropCollectionListCall } from "../components/simple/api";
 import { raindropCollectionListState } from "../store/common";
 import New from "./new";
 

@@ -5,7 +5,7 @@ import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "react-query";
 import { useRecoilValue } from "recoil";
 import { apiUrl, filterListState } from "../../store/common";
-import { ItemProps } from "./common";
+import { ItemProps } from "./api";
 import ItemCard from "./itemCard";
 
 const PAGE_SIZE = 20;

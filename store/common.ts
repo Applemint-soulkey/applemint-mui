@@ -1,5 +1,5 @@
 import { atom } from "recoil";
-import { ItemProps } from "../components/simple/common";
+import { ItemProps } from "../components/simple/api";
 
 // const apiUrl = "https://applemint-go-2gyldlncea-an.a.run.app";
 const apiUrl = "http://localhost:8080";
