@@ -26,4 +26,14 @@ const raindropCollectionListCall = () => {
   return fetch(`${apiUrl}/raindrop/collections`);
 };
 
-export { deleteCall, keepCall, raindropCollectionListCall };
+const makeRaindropCall = (item: ItemProps, collectionId: string) => {
+  return fetch(`${apiUrl}/raindrop/${collectionId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(item),
+  });
+};
+
+export { deleteCall, keepCall, raindropCollectionListCall, makeRaindropCall };
