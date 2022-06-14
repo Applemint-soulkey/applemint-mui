@@ -11,13 +11,19 @@ export interface ItemProps {
   path: string;
 }
 
-export const deleteCall = (item: ItemProps, collectionName: string) => {
+const deleteCall = (item: ItemProps, collectionName: string) => {
   console.log(collectionName, item.id);
   return fetch(`${apiUrl}/item/${collectionName}/${item.id}`, {
     method: "DELETE",
   });
 };
 
-export const keepCall = (item: ItemProps, from: string) => {
+const keepCall = (item: ItemProps, from: string) => {
   return fetch(`${apiUrl}/item/move/${item.id}?target=keep&origin=${from}`);
 };
+
+const raindropCollectionListCall = () => {
+  return fetch(`${apiUrl}/raindrop/collections`);
+};
+
+export { deleteCall, keepCall, raindropCollectionListCall };

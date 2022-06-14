@@ -10,16 +10,25 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import FlagIcon from "@mui/icons-material/Flag";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
+import InvertColorsIcon from "@mui/icons-material/InvertColors";
 import { NextPage } from "next";
 import Link from "next/link";
 import { deleteCall, ItemProps, keepCall } from "./common";
 import { QueryClient, useMutation, useQueryClient } from "react-query";
+import { useSetRecoilState } from "recoil";
+import { raindropItemState, raindropModalOpenState } from "../../store/common";
 
 const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
   itemData,
   collectionName,
 }) => {
+  const setRaindropModalOpen = useSetRecoilState(raindropModalOpenState);
+  const setRaindropItem = useSetRecoilState(raindropItemState);
   const queryClient = useQueryClient();
+  const sendToRaindropDialog = (item: ItemProps) => {
+    setRaindropItem(item);
+    setRaindropModalOpen(true);
+  };
 
   const deleteMutation = useMutation(
     () => deleteCall(itemData, collectionName),
@@ -76,6 +85,9 @@ const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
         <IconButton>
           <BookmarkIcon />
         </IconButton>
+        <IconButton onClick={() => sendToRaindropDialog(itemData)}>
+          <InvertColorsIcon />
+        </IconButton>
       </CardActions>
     </Card>
   );
@@ -110,3 +122,6 @@ const handleOnError = (
 };
 
 export default ItemCard;
+function raindropModalState(raindropModalState: any) {
+  throw new Error("Function not implemented.");
+}

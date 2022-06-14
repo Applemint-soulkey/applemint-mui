@@ -12,16 +12,26 @@ import { NextPage } from "next";
 
 import { useQuery } from "react-query";
 import { useState } from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 
-import { apiUrl, filterListState } from "../store/common";
+import {
+  apiUrl,
+  filterListState,
+  raindropItemState,
+  raindropModalOpenState,
+} from "../store/common";
 import ChipFilter from "../components/simple/chipFilter";
 import ItemContainer from "../components/simple/itemContainer";
+import RaindropModal from "../components/raindropModal";
 
 const New: NextPage = () => {
   const collectionName = "new";
   const filterSelected = useRecoilValue(filterListState);
   const [filterOpen, setFilterOpen] = useState(false);
+  const raindropItemData = useRecoilValue(raindropItemState);
+  const [raindropModalOpen, setRaindropModalOpen] = useRecoilState(
+    raindropModalOpenState
+  );
   const { data } = useQuery(collectionName + "Info", async () => {
     const res = await fetch(`${apiUrl}/collection/info/${collectionName}`);
     const json = await res.json();
@@ -75,6 +85,11 @@ const New: NextPage = () => {
       </Collapse>
       <Divider />
       <ItemContainer collectionName={collectionName} />
+      <RaindropModal
+        raindropOpen={raindropModalOpen}
+        setRaindropOpen={setRaindropModalOpen}
+        data={raindropItemData}
+      />
     </div>
   );
 };
