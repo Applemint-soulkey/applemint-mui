@@ -12,17 +12,33 @@ import { NextPage } from "next";
 
 import { useQuery } from "react-query";
 import { useState } from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 
-import { apiUrl, filterListState } from "../store/common";
-import ItemContainer from "./new/itemContainer";
-import ChipFilter from "./new/chipFilter";
+import {
+  apiUrl,
+  bookmarkModalOpenState,
+  filterListState,
+  ModalItemState,
+  raindropModalOpenState,
+} from "../store/common";
+import RaindropModal from "../components/raindropModal";
+import BookmarkModal from "../components/bookmarkModal";
+import ChipFilter from "../components/chipFilter";
+import ItemContainer from "../components/itemContainer";
 
 const New: NextPage = () => {
+  const collectionName = "new";
   const filterSelected = useRecoilValue(filterListState);
   const [filterOpen, setFilterOpen] = useState(false);
-  const { data } = useQuery("newInfo", async () => {
-    const res = await fetch(`${apiUrl}/collection/info/new`);
+  const ModalItemData = useRecoilValue(ModalItemState);
+  const [raindropModalOpen, setRaindropModalOpen] = useRecoilState(
+    raindropModalOpenState
+  );
+  const [bookmarkModalOpen, setBookmarkModalOpen] = useRecoilState(
+    bookmarkModalOpenState
+  );
+  const { data } = useQuery(collectionName + "Info", async () => {
+    const res = await fetch(`${apiUrl}/collection/info/${collectionName}`);
     const json = await res.json();
     return json;
   });
@@ -73,7 +89,22 @@ const New: NextPage = () => {
         </div>
       </Collapse>
       <Divider />
-      <ItemContainer />
+      <ItemContainer
+        collectionName={collectionName}
+        domainFilter={filterSelected[0]}
+        pathFilter=""
+      />
+      <RaindropModal
+        raindropOpen={raindropModalOpen}
+        setRaindropOpen={setRaindropModalOpen}
+        data={ModalItemData}
+      />
+      <BookmarkModal
+        bookmarkOpen={bookmarkModalOpen}
+        setBookmarkOpen={setBookmarkModalOpen}
+        itemData={ModalItemData}
+        collection_origin={collectionName}
+      />
     </div>
   );
 };

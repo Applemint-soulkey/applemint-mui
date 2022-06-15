@@ -1,4 +1,5 @@
 import { atom } from "recoil";
+import { ItemProps } from "../components/api";
 
 // const apiUrl = "https://applemint-go-2gyldlncea-an.a.run.app";
 const apiUrl = "http://localhost:8080";
@@ -13,4 +14,32 @@ const filterListState = atom({
   default: [] as string[],
 });
 
-export { drawerState, filterListState, apiUrl };
+const raindropCollectionListState = atom({
+  key: "raindropCollectionListState",
+  default: [] as { id: string; title: string }[],
+});
+
+const raindropModalOpenState = atom({
+  key: "raindropModalOpenState",
+  default: false,
+});
+
+const ModalItemState = atom({
+  key: "ModalItemState",
+  default: {} as ItemProps,
+});
+
+const bookmarkModalOpenState = atom({
+  key: "bookmarkModalOpenState",
+  default: false,
+});
+
+export {
+  drawerState,
+  filterListState,
+  raindropCollectionListState,
+  raindropModalOpenState,
+  ModalItemState,
+  bookmarkModalOpenState,
+  apiUrl,
+};

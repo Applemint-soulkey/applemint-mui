@@ -3,26 +3,36 @@ import { NextPage } from "next";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "react-query";
-import { useRecoilValue } from "recoil";
-import { apiUrl, filterListState } from "../../store/common";
-import { ItemProps } from "./common";
+import { apiUrl } from "../store/common";
+import { ItemProps } from "./api";
 import ItemCard from "./itemCard";
 
-const handleNewItemsFetch = async ({ pageParam = 0 }, filter = "") => {
+const PAGE_SIZE = 20;
+
+const handleNewItemsFetch = async (
+  { pageParam = 0 },
+  collectionName: string,
+  domainFilter = "",
+  pathFilter = ""
+) => {
   const res = await fetch(
-    `${apiUrl}/items/new?cursor=${pageParam}&filter=${filter}`
+    `${apiUrl}/items/${collectionName}?cursor=${pageParam}&domain=${domainFilter}&path=${pathFilter}`
   );
   const json = await res.json();
   return {
     data: json,
-    nextCursor: json.length > 0 ? pageParam + 10 : undefined,
+    nextCursor: json.length > 0 ? pageParam + PAGE_SIZE : undefined,
   };
 };
 
-const ItemContainer: NextPage = () => {
+const ItemContainer: NextPage<{
+  collectionName: string;
+  domainFilter: string;
+  pathFilter: string;
+}> = ({ collectionName, domainFilter, pathFilter }) => {
   const { ref, inView } = useInView();
-  const filter = useRecoilValue(filterListState);
 
+  // Declare a new query hook
   const {
     data,
     error,
@@ -33,13 +43,15 @@ const ItemContainer: NextPage = () => {
     refetch,
     remove,
   } = useInfiniteQuery(
-    "newItems",
-    (pageParam) => handleNewItemsFetch(pageParam, filter[0]),
+    collectionName + "Items",
+    (pageParam) =>
+      handleNewItemsFetch(pageParam, collectionName, domainFilter, pathFilter),
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
     }
   );
 
+  // Call fetchNextPage when the user scrolls to the bottom of the page.
   useEffect(() => {
     if (inView) {
       fetchNextPage();
@@ -50,10 +62,10 @@ const ItemContainer: NextPage = () => {
   useEffect(() => {
     remove();
     refetch();
-  }, [filter]);
+  }, [domainFilter, pathFilter]);
 
   return (
-    <div>
+    <div className="flex-1">
       {status === "loading" ? (
         <div id="loading_container" className="mt-5 flex justify-center">
           <CircularProgress />
@@ -65,7 +77,11 @@ const ItemContainer: NextPage = () => {
           <>
             {data?.pages.map((item) =>
               item?.data.map((item: ItemProps) => (
-                <ItemCard key={item.id} {...item} />
+                <ItemCard
+                  key={item.id}
+                  itemData={item}
+                  collectionName={collectionName}
+                />
               ))
             )}
           </>
