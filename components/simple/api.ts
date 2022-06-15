@@ -42,10 +42,21 @@ const getBookmarkListCall = async () => {
   return json;
 };
 
+const sendToBookmarkCall = (item: ItemProps, path: string, origin: string) => {
+  return fetch(`${apiUrl}/item/bookmark?from=${origin}&path=${path}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(item),
+  });
+};
+
 export {
   deleteCall,
   keepCall,
   raindropCollectionListCall,
   makeRaindropCall,
   getBookmarkListCall,
+  sendToBookmarkCall,
 };

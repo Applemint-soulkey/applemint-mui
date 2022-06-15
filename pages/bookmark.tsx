@@ -45,7 +45,6 @@ const Bookmark: NextPage = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-  console.log(data);
 
   return (
     <div className="container flex flex-col p-3 sm:p-10">
@@ -72,12 +71,21 @@ const Bookmark: NextPage = () => {
           sx={{ borderRight: 1, borderColor: "divider" }}
         >
           {data?.map((item: any, index: number) => (
-            <Tab key={item.id} label={item.Path} {...a11yProps(index)} />
+            <Tab
+              className={
+                value === index
+                  ? "font-pretend font-extrabold"
+                  : "font-pretend font-light"
+              }
+              key={index}
+              label={item.Path}
+              {...a11yProps(index)}
+            />
           ))}
         </Tabs>
         {data?.map((item: any, index: number) => (
-          <TabPanel key={item.id} value={value} index={index}>
-            <Typography>{item.Path}</Typography>
+          <TabPanel key={index} value={value} index={index}>
+            <span className="font-semibold">{item.Path}</span>
           </TabPanel>
         ))}
       </Box>

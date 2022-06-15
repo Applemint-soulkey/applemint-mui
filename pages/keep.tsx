@@ -16,6 +16,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 
 import {
   apiUrl,
+  bookmarkModalOpenState,
   filterListState,
   ModalItemState,
   raindropModalOpenState,
@@ -23,12 +24,16 @@ import {
 import ChipFilter from "../components/simple/chipFilter";
 import ItemContainer from "../components/simple/itemContainer";
 import RaindropModal from "../components/raindropModal";
+import BookmarkModal from "../components/bookmarkModal";
 
 const Keep: NextPage = () => {
   const collectionName = "keep";
   const filterSelected = useRecoilValue(filterListState);
-  const [filterOpen, setFilterOpen] = useState(false);
   const ModalItemData = useRecoilValue(ModalItemState);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [bookmarkModalOpen, setBookmarkModalOpen] = useRecoilState(
+    bookmarkModalOpenState
+  );
   const [raindropModalOpen, setRaindropModalOpen] = useRecoilState(
     raindropModalOpenState
   );
@@ -90,6 +95,12 @@ const Keep: NextPage = () => {
         raindropOpen={raindropModalOpen}
         setRaindropOpen={setRaindropModalOpen}
         data={ModalItemData}
+      />
+      <BookmarkModal
+        bookmarkOpen={bookmarkModalOpen}
+        setBookmarkOpen={setBookmarkModalOpen}
+        itemData={ModalItemData}
+        collection_origin={collectionName}
       />
     </div>
   );

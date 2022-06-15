@@ -98,7 +98,8 @@ const New: NextPage = () => {
       <BookmarkModal
         bookmarkOpen={bookmarkModalOpen}
         setBookmarkOpen={setBookmarkModalOpen}
-        data={ModalItemData}
+        itemData={ModalItemData}
+        collection_origin={collectionName}
       />
     </div>
   );
