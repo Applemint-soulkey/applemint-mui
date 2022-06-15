@@ -12,6 +12,7 @@ import FlagIcon from "@mui/icons-material/Flag";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import InvertColorsIcon from "@mui/icons-material/InvertColors";
 import UndoIcon from "@mui/icons-material/Undo";
+import LinkIcon from "@mui/icons-material/Link";
 import { NextPage } from "next";
 import Link from "next/link";
 import { deleteCall, ItemProps, keepCall, restoreCall, trashCall } from "./api";
@@ -21,6 +22,7 @@ import {
   raindropModalOpenState,
   bookmarkModalOpenState,
   ModalItemState,
+  linkSnackbarOpenState,
 } from "../store/common";
 
 const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
@@ -29,11 +31,17 @@ const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
 }) => {
   const setRaindropModalOpen = useSetRecoilState(raindropModalOpenState);
   const setBookmarkModalOpen = useSetRecoilState(bookmarkModalOpenState);
+  const setIsLinkSnackbarOpen = useSetRecoilState(linkSnackbarOpenState);
   const setModalItemData = useSetRecoilState(ModalItemState);
   const queryClient = useQueryClient();
   const sendToRaindropDialog = (item: ItemProps) => {
     setModalItemData(item);
     setRaindropModalOpen(true);
+  };
+
+  const copyLinkToClipBoard = (url: string) => {
+    navigator.clipboard.writeText(url);
+    setIsLinkSnackbarOpen(true);
   };
 
   const sendToBookmarkDialog = (item: ItemProps) => {
@@ -134,6 +142,9 @@ const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
             </IconButton>
           </>
         )}
+        <IconButton onClick={() => copyLinkToClipBoard(itemData.url)}>
+          <LinkIcon />
+        </IconButton>
       </CardActions>
     </Card>
   );
