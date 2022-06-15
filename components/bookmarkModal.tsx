@@ -13,11 +13,7 @@ import {
 import { NextPage } from "next";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import {
-  getBookmarkListCall,
-  ItemProps,
-  sendToBookmarkCall,
-} from "./simple/api";
+import { getBookmarkListCall, ItemProps, sendToBookmarkCall } from "./api";
 
 const BookmarkModal: NextPage<{
   bookmarkOpen: boolean;

@@ -3,7 +3,7 @@ import { NextPage } from "next";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "react-query";
-import { apiUrl } from "../../store/common";
+import { apiUrl } from "../store/common";
 import { ItemProps } from "./api";
 import ItemCard from "./itemCard";
 

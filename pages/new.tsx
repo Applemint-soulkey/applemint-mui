@@ -21,10 +21,10 @@ import {
   ModalItemState,
   raindropModalOpenState,
 } from "../store/common";
-import ChipFilter from "../components/simple/chipFilter";
-import ItemContainer from "../components/simple/itemContainer";
 import RaindropModal from "../components/raindropModal";
 import BookmarkModal from "../components/bookmarkModal";
+import ChipFilter from "../components/chipFilter";
+import ItemContainer from "../components/itemContainer";
 
 const New: NextPage = () => {
   const collectionName = "new";

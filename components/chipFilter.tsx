@@ -1,8 +1,8 @@
 import { Chip, Avatar } from "@mui/material";
 import { NextPage } from "next";
 import { useRecoilState } from "recoil";
-import { filterListState } from "../../store/common";
 import CheckIcon from "@mui/icons-material/Check";
+import { filterListState } from "../store/common";
 
 const ChipFilter: NextPage<{ label: string; count: number }> = ({
   label,

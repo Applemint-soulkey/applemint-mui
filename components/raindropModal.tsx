@@ -14,7 +14,7 @@ import { NextPage } from "next";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { raindropCollectionListState } from "../store/common";
-import { ItemProps, makeRaindropCall } from "./simple/api";
+import { ItemProps, makeRaindropCall } from "./api";
 
 const RaindropModal: NextPage<{
   raindropOpen: boolean;

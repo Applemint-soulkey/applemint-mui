@@ -17,10 +17,10 @@ import { deleteCall, ItemProps, keepCall } from "./api";
 import { QueryClient, useMutation, useQueryClient } from "react-query";
 import { useSetRecoilState } from "recoil";
 import {
+  raindropModalOpenState,
   bookmarkModalOpenState,
   ModalItemState,
-  raindropModalOpenState,
-} from "../../store/common";
+} from "../store/common";
 
 const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
   itemData,

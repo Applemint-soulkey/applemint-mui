@@ -1,4 +1,4 @@
-import { apiUrl } from "../../store/common";
+import { apiUrl } from "../store/common";
 
 export interface ItemProps {
   id: string;
