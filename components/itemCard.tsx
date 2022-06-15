@@ -140,11 +140,11 @@ const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
             <IconButton onClick={() => sendToRaindropDialog(itemData)}>
               <InvertColorsIcon />
             </IconButton>
+            <IconButton onClick={() => copyLinkToClipBoard(itemData.url)}>
+              <LinkIcon />
+            </IconButton>
           </>
         )}
-        <IconButton onClick={() => copyLinkToClipBoard(itemData.url)}>
-          <LinkIcon />
-        </IconButton>
       </CardActions>
     </Card>
   );
