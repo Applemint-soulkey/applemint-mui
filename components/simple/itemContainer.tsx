@@ -3,8 +3,7 @@ import { NextPage } from "next";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "react-query";
-import { useRecoilValue } from "recoil";
-import { apiUrl, filterListState } from "../../store/common";
+import { apiUrl } from "../../store/common";
 import { ItemProps } from "./api";
 import ItemCard from "./itemCard";
 
@@ -13,10 +12,11 @@ const PAGE_SIZE = 20;
 const handleNewItemsFetch = async (
   { pageParam = 0 },
   collectionName: string,
-  filter = ""
+  domainFilter = "",
+  pathFilter = ""
 ) => {
   const res = await fetch(
-    `${apiUrl}/items/${collectionName}?cursor=${pageParam}&filter=${filter}`
+    `${apiUrl}/items/${collectionName}?cursor=${pageParam}&domain=${domainFilter}&path=${pathFilter}`
   );
   const json = await res.json();
   return {
@@ -25,11 +25,12 @@ const handleNewItemsFetch = async (
   };
 };
 
-const ItemContainer: NextPage<{ collectionName: string }> = ({
-  collectionName,
-}) => {
+const ItemContainer: NextPage<{
+  collectionName: string;
+  domainFilter: string;
+  pathFilter: string;
+}> = ({ collectionName, domainFilter, pathFilter }) => {
   const { ref, inView } = useInView();
-  const filter = useRecoilValue(filterListState);
 
   // Declare a new query hook
   const {
@@ -43,7 +44,8 @@ const ItemContainer: NextPage<{ collectionName: string }> = ({
     remove,
   } = useInfiniteQuery(
     collectionName + "Items",
-    (pageParam) => handleNewItemsFetch(pageParam, collectionName, filter[0]),
+    (pageParam) =>
+      handleNewItemsFetch(pageParam, collectionName, domainFilter, pathFilter),
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
     }
@@ -60,10 +62,10 @@ const ItemContainer: NextPage<{ collectionName: string }> = ({
   useEffect(() => {
     remove();
     refetch();
-  }, [filter]);
+  }, [domainFilter, pathFilter]);
 
   return (
-    <div>
+    <div className="flex-1">
       {status === "loading" ? (
         <div id="loading_container" className="mt-5 flex justify-center">
           <CircularProgress />

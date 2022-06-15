@@ -85,7 +85,7 @@ const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
         <IconButton onClick={() => deleteMutation.mutate()}>
           <DeleteIcon />
         </IconButton>
-        {collectionName === "keep" ? (
+        {collectionName === "keep" || collectionName === "bookmark" ? (
           <></>
         ) : (
           <IconButton onClick={() => keepMutation.mutate()}>

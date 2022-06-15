@@ -3,7 +3,16 @@ import { NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
 import { useQuery } from "react-query";
+import { useRecoilValue, useRecoilState } from "recoil";
+import BookmarkModal from "../components/bookmarkModal";
+import RaindropModal from "../components/raindropModal";
 import { getBookmarkListCall } from "../components/simple/api";
+import ItemContainer from "../components/simple/itemContainer";
+import {
+  ModalItemState,
+  raindropModalOpenState,
+  bookmarkModalOpenState,
+} from "../store/common";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -23,9 +32,7 @@ function TabPanel(props: TabPanelProps) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
+        <Box className="flex flex-1 container pl-5">{children}</Box>
       )}
     </div>
   );
@@ -41,6 +48,14 @@ function a11yProps(index: number) {
 const Bookmark: NextPage = () => {
   const [value, setValue] = useState(0);
   const { data } = useQuery("bookmark_list", getBookmarkListCall, {});
+
+  const ModalItemData = useRecoilValue(ModalItemState);
+  const [raindropModalOpen, setRaindropModalOpen] = useRecoilState(
+    raindropModalOpenState
+  );
+  const [bookmarkModalOpen, setBookmarkModalOpen] = useRecoilState(
+    bookmarkModalOpenState
+  );
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -83,11 +98,28 @@ const Bookmark: NextPage = () => {
             />
           ))}
         </Tabs>
-        {data?.map((item: any, index: number) => (
-          <TabPanel key={index} value={value} index={index}>
-            <span className="font-semibold">{item.Path}</span>
-          </TabPanel>
-        ))}
+        <div className="flex flex-1 flex-col">
+          {data?.map((item: any, index: number) => (
+            <TabPanel key={index} value={value} index={index}>
+              <ItemContainer
+                collectionName="bookmark"
+                domainFilter=""
+                pathFilter={item.Path}
+              />
+            </TabPanel>
+          ))}
+        </div>
+        <RaindropModal
+          raindropOpen={raindropModalOpen}
+          setRaindropOpen={setRaindropModalOpen}
+          data={ModalItemData}
+        />
+        <BookmarkModal
+          bookmarkOpen={bookmarkModalOpen}
+          setBookmarkOpen={setBookmarkModalOpen}
+          itemData={ModalItemData}
+          collection_origin="bookmark"
+        />
       </Box>
     </div>
   );

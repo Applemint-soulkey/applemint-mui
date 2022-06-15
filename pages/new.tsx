@@ -89,7 +89,11 @@ const New: NextPage = () => {
         </div>
       </Collapse>
       <Divider />
-      <ItemContainer collectionName={collectionName} />
+      <ItemContainer
+        collectionName={collectionName}
+        domainFilter={filterSelected[0]}
+        pathFilter=""
+      />
       <RaindropModal
         raindropOpen={raindropModalOpen}
         setRaindropOpen={setRaindropModalOpen}
