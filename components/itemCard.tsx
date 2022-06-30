@@ -41,7 +41,7 @@ const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
   };
 
   const deleteMutation = useMutation(
-    () => deleteCall(itemData, collectionName),
+    () => deleteCall(itemData.id, collectionName),
     {
       onMutate: async () => await handleOnMutate(queryClient, collectionName),
       onSuccess: () => handleOnSuccess(queryClient, collectionName),
