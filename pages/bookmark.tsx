@@ -4,8 +4,8 @@ import Head from "next/head";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { useRecoilValue, useRecoilState } from "recoil";
-import BookmarkModal from "../components/bookmarkModal";
-import RaindropModal from "../components/raindropModal";
+import BookmarkModal from "../components/modal/bookmarkModal";
+import RaindropModal from "../components/modal/raindropModal";
 import { getBookmarkListCall } from "../components/api";
 import {
   ModalItemState,

@@ -21,8 +21,8 @@ import {
   ModalItemState,
   raindropModalOpenState,
 } from "../store/common";
-import RaindropModal from "../components/raindropModal";
-import BookmarkModal from "../components/bookmarkModal";
+import RaindropModal from "../components/modal/raindropModal";
+import BookmarkModal from "../components/modal/bookmarkModal";
 import ChipFilter from "../components/chipFilter";
 import ItemContainer from "../components/itemContainer";
 
