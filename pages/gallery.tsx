@@ -10,6 +10,7 @@ import {
   ImageList,
   ImageListItem,
   ImageListItemBar,
+  Snackbar,
   Typography,
 } from "@mui/material";
 import { NextPage } from "next";
@@ -78,6 +79,17 @@ const Gallery: NextPage<{}> = () => {
   const { ref, inView } = useInView();
   const [open, setOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState<GalleryItemProps>();
+  const [dropboxSnackbarOpen, setDropboxSnackbarOpen] = useState(false);
+
+  const handleSnackbarClose = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setDropboxSnackbarOpen(false);
+  };
 
   // React Query
   const queryClient = useQueryClient();
@@ -201,6 +213,12 @@ const Gallery: NextPage<{}> = () => {
           )}
         </button>
       </div>
+      <Snackbar
+        open={dropboxSnackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        message={`${currentItem?.text} save to Dropbox Request`}
+      />
       <Dialog fullWidth open={open} onClose={() => setOpen(false)}>
         <DialogTitle>{currentItem?.text}</DialogTitle>
         <DialogContent>
@@ -227,6 +245,7 @@ const Gallery: NextPage<{}> = () => {
               if (currentItem) {
                 handleDropboxCall(currentItem).then((res) => {
                   console.log(res);
+                  setDropboxSnackbarOpen(true);
                 });
               }
             }}
