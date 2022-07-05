@@ -12,10 +12,18 @@ import { NextPage } from "next";
 import Head from "next/head";
 import React from "react";
 import { useRecoilState } from "recoil";
-import { showThumbnailState } from "../store/common";
+import {
+  galleryColumnCountState,
+  isDarkModeState,
+  showThumbnailState,
+} from "../store/common";
 
 const Settings: NextPage = () => {
   const [showThumbnail, setShowThumbnail] = useRecoilState(showThumbnailState);
+  const [galleryColumnCount, setGalleryColumnCount] = useRecoilState(
+    galleryColumnCountState
+  );
+  const [isDarkMode, setIsDarkMode] = useRecoilState(isDarkModeState);
 
   return (
     <div className="container flex flex-col p-3 sm:p-10">
@@ -35,7 +43,12 @@ const Settings: NextPage = () => {
             <Typography variant="body1" className="flex-1">
               Dark Mode
             </Typography>
-            <Switch />
+            <Switch
+              checked={isDarkMode}
+              onChange={(event) => {
+                setIsDarkMode(event.target.checked);
+              }}
+            />
           </div>
           <div className="flex flex-row items-center">
             <Typography variant="body1" className="flex-1">
@@ -66,7 +79,12 @@ const Settings: NextPage = () => {
               Gallery Column Rows
             </Typography>
             <FormControl size="small">
-              <Select>
+              <Select
+                value={galleryColumnCount}
+                onChange={(event) => {
+                  setGalleryColumnCount(event.target.value as number);
+                }}
+              >
                 <MenuItem value={1}>1</MenuItem>
                 <MenuItem value={2}>2</MenuItem>
                 <MenuItem value={3}>3</MenuItem>

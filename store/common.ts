@@ -41,12 +41,17 @@ const linkSnackbarOpenState = atom({
 
 const showThumbnailState = atom({
   key: "showThumbnailState",
-  default: false,
+  default: true,
 });
 
 const galleryColumnCountState = atom({
   key: "galleryColumnCountState",
   default: 3,
+});
+
+const isDarkModeState = atom({
+  key: "isDarkModeState",
+  default: false,
 });
 
 export {
@@ -60,4 +65,5 @@ export {
   apiUrl,
   showThumbnailState,
   galleryColumnCountState,
+  isDarkModeState,
 };

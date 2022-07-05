@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { NextPage } from "next";
 import Head from "next/head";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import {
@@ -23,7 +24,11 @@ import {
   useQuery,
   useQueryClient,
 } from "react-query";
-import { apiUrl, showThumbnailState } from "../store/common";
+import {
+  apiUrl,
+  galleryColumnCountState,
+  showThumbnailState,
+} from "../store/common";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { deleteCall } from "../components/api";
 import { useRecoilValue } from "recoil";
@@ -82,6 +87,7 @@ const Gallery: NextPage<{}> = () => {
   const [currentItem, setCurrentItem] = useState<GalleryItemProps>();
   const [dropboxSnackbarOpen, setDropboxSnackbarOpen] = useState(false);
   const showThumbnail = useRecoilValue(showThumbnailState);
+  const galleryColumnCount = useRecoilValue(galleryColumnCountState);
 
   const handleSnackbarClose = (
     event: React.SyntheticEvent | Event,
@@ -148,27 +154,41 @@ const Gallery: NextPage<{}> = () => {
           <p>{(error as Error).message}</p>
         ) : (
           <>
-            <ImageList cols={3} rowHeight={164}>
+            <ImageList cols={galleryColumnCount}>
               {data!!.pages.map((page) =>
                 page?.data.map((item: GalleryItemProps) => {
                   return (
                     <ImageListItem key={item.link}>
-                      {item.link.includes(".mp4") ? (
-                        <video
-                          src={item.link}
-                          controls
-                          autoPlay
-                          className="w-full h-full"
-                          onClick={() => {
-                            setCurrentItem(item);
-                            setOpen(true);
-                          }}
-                        />
+                      {showThumbnail ? (
+                        item.link.includes(".mp4") ? (
+                          <video
+                            src={item.link}
+                            controls
+                            autoPlay
+                            muted
+                            className="w-full h-full"
+                            onClick={() => {
+                              setCurrentItem(item);
+                              setOpen(true);
+                            }}
+                          />
+                        ) : (
+                          <img
+                            src={item.link}
+                            loading="lazy"
+                            className="bg-white overflow-hidden"
+                            onClick={() => {
+                              setCurrentItem(item);
+                              setOpen(true);
+                            }}
+                          />
+                        )
                       ) : (
-                        <img
-                          src={item.link}
-                          loading="lazy"
-                          className="bg-white overflow-hidden"
+                        <Image
+                          src="/image_placeholder.jpg"
+                          width={128}
+                          height={128}
+                          layout="responsive"
                           onClick={() => {
                             setCurrentItem(item);
                             setOpen(true);
