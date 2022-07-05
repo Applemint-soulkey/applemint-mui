@@ -16,6 +16,7 @@ import BookmarksIcon from "@mui/icons-material/Bookmarks";
 import SettingsIcon from "@mui/icons-material/Settings";
 import FlagIcon from "@mui/icons-material/Flag";
 import CollectionsIcon from "@mui/icons-material/Collections";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { NextPage } from "next";
 import { useRecoilState } from "recoil";
 import { drawerState } from "../store/common";
@@ -82,7 +83,7 @@ export const SideMenu: NextPage = () => {
             </ListItemButton>
           </Link>
 
-          {/* Bookmark */}
+          {/* Gallery */}
           <Link href={"gallery"}>
             <ListItemButton>
               <ListItemIcon>
@@ -90,6 +91,18 @@ export const SideMenu: NextPage = () => {
               </ListItemIcon>
               <ListItem key={"Gallery"} disablePadding>
                 <ListItemText primary={"Gallery"} />
+              </ListItem>
+            </ListItemButton>
+          </Link>
+
+          {/* Trash */}
+          <Link href={"trash"}>
+            <ListItemButton>
+              <ListItemIcon>
+                <DeleteIcon sx={{ color: "black" }} />
+              </ListItemIcon>
+              <ListItem key={"Trash"} disablePadding>
+                <ListItemText primary={"Trash"} />
               </ListItem>
             </ListItemButton>
           </Link>
