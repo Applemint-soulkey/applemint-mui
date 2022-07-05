@@ -1,8 +1,15 @@
 import {
   Box,
   Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   FormControl,
+  InputLabel,
   MenuItem,
   Select,
   Switch,
@@ -10,8 +17,14 @@ import {
 } from "@mui/material";
 import { NextPage } from "next";
 import Head from "next/head";
-import React from "react";
+import React, { useState } from "react";
+import { useQuery } from "react-query";
 import { useRecoilState } from "recoil";
+import {
+  clearCollectionCall,
+  getCollectionListCall,
+  manualCrawlCall,
+} from "../components/api";
 import {
   galleryColumnCountState,
   isDarkModeState,
@@ -24,12 +37,91 @@ const Settings: NextPage = () => {
     galleryColumnCountState
   );
   const [isDarkMode, setIsDarkMode] = useRecoilState(isDarkModeState);
+  const { data } = useQuery("collection_list", getCollectionListCall, {});
+  const [targetCollection, setTargetCollection] = useState("");
+  const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
+  const [isManualClearDialogOpen, setIsManualClearDialogOpen] = useState(false);
+  const [isCrawling, setIsCrawling] = useState(false);
+  const handleCloseClearDialog = () => {
+    setIsClearDialogOpen(false);
+  };
+  const handleCloseManualClearDialog = () => {
+    setIsManualClearDialogOpen(false);
+  };
+
+  const handleManualCrawlRequest = async () => {
+    setIsCrawling(true);
+    await manualCrawlCall();
+    setIsCrawling(false);
+    setIsManualClearDialogOpen(false);
+  };
+
+  const ManualCrawlDialog: NextPage = () => {
+    return (
+      <Dialog
+        open={isManualClearDialogOpen}
+        onClose={handleCloseManualClearDialog}
+      >
+        <DialogTitle>Manual Crawl</DialogTitle>
+        <DialogContent>
+          {isCrawling ? (
+            <CircularProgress />
+          ) : (
+            <DialogContentText>
+              Manual Crawl could be pressed to db server.
+              <br /> And Side Effect is that all the collections will be
+              crawled.
+            </DialogContentText>
+          )}
+        </DialogContent>
+        {!isCrawling && (
+          <DialogActions>
+            <Button onClick={handleCloseManualClearDialog}>Cancel</Button>
+            <Button
+              onClick={async () => {
+                await handleManualCrawlRequest();
+              }}
+            >
+              Crawl
+            </Button>
+          </DialogActions>
+        )}
+      </Dialog>
+    );
+  };
+
+  const CollectionClearDialog: NextPage = () => {
+    return (
+      <Dialog open={isClearDialogOpen} onClose={handleCloseClearDialog}>
+        <DialogTitle>Clear Collection</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {`Are you sure you want to clear the collection '${targetCollection}'?`}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseClearDialog}>Cancel</Button>
+          <Button
+            onClick={async () => {
+              let result = await clearCollectionCall(targetCollection);
+              console.log(result);
+              handleCloseClearDialog();
+            }}
+          >
+            Clear
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  };
 
   return (
     <div className="container flex flex-col p-3 sm:p-10">
       <Head>
         <title>Settings</title>
       </Head>
+      <CollectionClearDialog />
+      <ManualCrawlDialog />
       <Typography variant="h3" className="flex-1 font-extrabold">
         Settings
       </Typography>
@@ -38,12 +130,13 @@ const Settings: NextPage = () => {
         <Typography variant="h5" className="font-bold">
           Common
         </Typography>
-        <Box className="my-3">
+        <Box className="my-3 flex flex-col gap-3">
           <div className="flex flex-row items-center">
             <Typography variant="body1" className="flex-1">
               Dark Mode
             </Typography>
             <Switch
+              disabled
               checked={isDarkMode}
               onChange={(event) => {
                 setIsDarkMode(event.target.checked);
@@ -52,9 +145,42 @@ const Settings: NextPage = () => {
           </div>
           <div className="flex flex-row items-center">
             <Typography variant="body1" className="flex-1">
+              Manual Crawl
+            </Typography>
+            <Button onClick={() => setIsManualClearDialogOpen(true)}>
+              Crawl
+            </Button>
+          </div>
+          <div className="flex flex-row items-center">
+            <Typography variant="body1" className="flex-1">
               Clear Collection
             </Typography>
-            <Button>Clear</Button>
+            <Box sx={{ minWidth: 120 }}>
+              <FormControl fullWidth size="small">
+                <InputLabel id="collection-select-label">Collection</InputLabel>
+                <Select
+                  labelId="collection-select-label"
+                  label="Collection"
+                  value={targetCollection}
+                  onChange={(event) => {
+                    setTargetCollection(event.target.value);
+                  }}
+                >
+                  {data?.collections.map((collection: string) => (
+                    <MenuItem
+                      key={collection}
+                      value={collection}
+                      onClick={() => {
+                        setTargetCollection(collection);
+                      }}
+                    >
+                      {collection}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+            <Button onClick={() => setIsClearDialogOpen(true)}>Clear</Button>
           </div>
         </Box>
         <Divider className="my-3" />

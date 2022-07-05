@@ -50,6 +50,25 @@ const getBookmarkListCall = async () => {
   return json;
 };
 
+const getCollectionListCall = async () => {
+  const response = await fetch(`${apiUrl}/collection`);
+  const json = await response.json();
+  return json;
+};
+
+const clearCollectionCall = (collectionName: string) => {
+  return fetch(`${apiUrl}/collection/${collectionName}`, {
+    method: "DELETE",
+  });
+};
+
+const manualCrawlCall = async () => {
+  let bpCrawlResult = await fetch(`${apiUrl}/crawl/bp`);
+  let isgCrawlResult = await fetch(`${apiUrl}/crawl/isg`);
+  console.log(bpCrawlResult, isgCrawlResult);
+  return { bpCrawlResult, isgCrawlResult };
+};
+
 const sendToBookmarkCall = (item: ItemProps, path: string, origin: string) => {
   return fetch(`${apiUrl}/item/bookmark?from=${origin}&path=${path}`, {
     method: "POST",
@@ -69,4 +88,7 @@ export {
   makeRaindropCall,
   getBookmarkListCall,
   sendToBookmarkCall,
+  getCollectionListCall,
+  clearCollectionCall,
+  manualCrawlCall,
 };
