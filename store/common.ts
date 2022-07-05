@@ -34,6 +34,16 @@ const bookmarkModalOpenState = atom({
   default: false,
 });
 
+const showThumbnailState = atom({
+  key: "showThumbnailState",
+  default: false,
+});
+
+const galleryColumnCountState = atom({
+  key: "galleryColumnCountState",
+  default: 3,
+});
+
 export {
   drawerState,
   filterListState,
@@ -42,4 +52,6 @@ export {
   ModalItemState,
   bookmarkModalOpenState,
   apiUrl,
+  showThumbnailState,
+  galleryColumnCountState,
 };

@@ -23,9 +23,10 @@ import {
   useQuery,
   useQueryClient,
 } from "react-query";
-import { apiUrl } from "../store/common";
+import { apiUrl, showThumbnailState } from "../store/common";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { deleteCall } from "../components/api";
+import { useRecoilValue } from "recoil";
 
 const PAGE_SIZE = 20;
 
@@ -80,6 +81,7 @@ const Gallery: NextPage<{}> = () => {
   const [open, setOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState<GalleryItemProps>();
   const [dropboxSnackbarOpen, setDropboxSnackbarOpen] = useState(false);
+  const showThumbnail = useRecoilValue(showThumbnailState);
 
   const handleSnackbarClose = (
     event: React.SyntheticEvent | Event,
