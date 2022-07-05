@@ -11,9 +11,9 @@ export interface ItemProps {
   path: string;
 }
 
-const deleteCall = (item: ItemProps, collectionName: string) => {
-  console.log(collectionName, item.id);
-  return fetch(`${apiUrl}/item/${collectionName}/${item.id}`, {
+const deleteCall = (itemId: string, collectionName: string) => {
+  console.log(collectionName, itemId);
+  return fetch(`${apiUrl}/item/${collectionName}/${itemId}`, {
     method: "DELETE",
   });
 };
