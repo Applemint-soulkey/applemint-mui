@@ -57,10 +57,7 @@ export default function Layout(props: Props) {
                 <MenuIcon />
               </IconButton>
               <Link href={"/"}>
-                <Typography
-                  className="font-pretend font-black cursor-pointer"
-                  variant="h5"
-                >
+                <Typography className="font-black cursor-pointer" variant="h5">
                   Applemint
                 </Typography>
               </Link>

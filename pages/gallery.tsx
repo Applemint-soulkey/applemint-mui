@@ -262,7 +262,7 @@ const Gallery: NextPage<{}> = () => {
         </DialogContent>
         <DialogActions>
           <Button
-            className="font-pretend font-bold"
+            className="font-bold"
             onClick={() => {
               if (currentItem) {
                 handleDropboxCall(currentItem).then((res) => {
@@ -276,7 +276,7 @@ const Gallery: NextPage<{}> = () => {
             SAVE TO DROPBOX
           </Button>
           <Button
-            className="font-pretend font-bold"
+            className="font-bold"
             onClick={() => setOpen(false)}
             color="primary"
           >

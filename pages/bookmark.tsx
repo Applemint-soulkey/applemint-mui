@@ -87,11 +87,7 @@ const Bookmark: NextPage = () => {
         >
           {data?.map((item: any, index: number) => (
             <Tab
-              className={
-                value === index
-                  ? "font-pretend font-extrabold"
-                  : "font-pretend font-light"
-              }
+              className={value === index ? "font-extrabold" : "font-light"}
               key={index}
               label={item.Path}
               {...a11yProps(index)}
