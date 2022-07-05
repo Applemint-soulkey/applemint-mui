@@ -11,15 +11,18 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import FlagIcon from "@mui/icons-material/Flag";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import InvertColorsIcon from "@mui/icons-material/InvertColors";
+import UndoIcon from "@mui/icons-material/Undo";
+import LinkIcon from "@mui/icons-material/Link";
 import { NextPage } from "next";
 import Link from "next/link";
-import { deleteCall, ItemProps, keepCall } from "./api";
+import { deleteCall, ItemProps, keepCall, restoreCall, trashCall } from "./api";
 import { QueryClient, useMutation, useQueryClient } from "react-query";
 import { useSetRecoilState } from "recoil";
 import {
   raindropModalOpenState,
   bookmarkModalOpenState,
   ModalItemState,
+  linkSnackbarOpenState,
 } from "../store/common";
 
 const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
@@ -28,6 +31,7 @@ const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
 }) => {
   const setRaindropModalOpen = useSetRecoilState(raindropModalOpenState);
   const setBookmarkModalOpen = useSetRecoilState(bookmarkModalOpenState);
+  const setIsLinkSnackbarOpen = useSetRecoilState(linkSnackbarOpenState);
   const setModalItemData = useSetRecoilState(ModalItemState);
   const queryClient = useQueryClient();
   const sendToRaindropDialog = (item: ItemProps) => {
@@ -35,13 +39,25 @@ const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
     setRaindropModalOpen(true);
   };
 
+  const copyLinkToClipBoard = (url: string) => {
+    navigator.clipboard.writeText(url);
+    setIsLinkSnackbarOpen(true);
+  };
+
   const sendToBookmarkDialog = (item: ItemProps) => {
     setModalItemData(item);
     setBookmarkModalOpen(true);
   };
 
+  const trashMutation = useMutation(() => trashCall(itemData, collectionName), {
+    onMutate: async () => await handleOnMutate(queryClient, collectionName),
+    onSuccess: () => handleOnSuccess(queryClient, collectionName),
+    onError: (err) => handleOnError(queryClient, collectionName, err),
+    onSettled: () => handleOnSuccess(queryClient, collectionName),
+  });
+
   const deleteMutation = useMutation(
-    () => deleteCall(itemData, collectionName),
+    () => deleteCall(itemData.id, collectionName),
     {
       onMutate: async () => await handleOnMutate(queryClient, collectionName),
       onSuccess: () => handleOnSuccess(queryClient, collectionName),
@@ -51,6 +67,13 @@ const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
   );
 
   const keepMutation = useMutation(() => keepCall(itemData, collectionName), {
+    onMutate: async () => await handleOnMutate(queryClient, collectionName),
+    onSuccess: () => handleOnSuccess(queryClient, collectionName),
+    onError: (err) => handleOnError(queryClient, collectionName, err),
+    onSettled: () => handleOnSuccess(queryClient, collectionName),
+  });
+
+  const restoreMutation = useMutation(() => restoreCall(itemData), {
     onMutate: async () => await handleOnMutate(queryClient, collectionName),
     onSuccess: () => handleOnSuccess(queryClient, collectionName),
     onError: (err) => handleOnError(queryClient, collectionName, err),
@@ -82,22 +105,46 @@ const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
         <div className="flex-1">
           <Chip label={itemData.domain} />
         </div>
-        <IconButton onClick={() => deleteMutation.mutate()}>
+        {collectionName === "trash" && (
+          <IconButton onClick={() => restoreMutation.mutate()}>
+            <UndoIcon />
+          </IconButton>
+        )}
+        <IconButton
+          onClick={() => {
+            if (collectionName === "trash") {
+              deleteMutation.mutate();
+            } else {
+              trashMutation.mutate();
+            }
+          }}
+        >
           <DeleteIcon />
         </IconButton>
-        {collectionName === "keep" || collectionName === "bookmark" ? (
+        {collectionName === "keep" ||
+        collectionName === "bookmark" ||
+        collectionName === "trash" ? (
           <></>
         ) : (
           <IconButton onClick={() => keepMutation.mutate()}>
             <FlagIcon />
           </IconButton>
         )}
-        <IconButton onClick={() => sendToBookmarkDialog(itemData)}>
-          <BookmarkIcon />
-        </IconButton>
-        <IconButton onClick={() => sendToRaindropDialog(itemData)}>
-          <InvertColorsIcon />
-        </IconButton>
+        {collectionName === "trash" ? (
+          <></>
+        ) : (
+          <>
+            <IconButton onClick={() => sendToBookmarkDialog(itemData)}>
+              <BookmarkIcon />
+            </IconButton>
+            <IconButton onClick={() => sendToRaindropDialog(itemData)}>
+              <InvertColorsIcon />
+            </IconButton>
+            <IconButton onClick={() => copyLinkToClipBoard(itemData.url)}>
+              <LinkIcon />
+            </IconButton>
+          </>
+        )}
       </CardActions>
     </Card>
   );

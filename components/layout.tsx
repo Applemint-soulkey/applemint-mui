@@ -13,7 +13,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { ThemeProvider } from "@mui/material/styles";
 import { SideMenu } from "./sidemenu";
 import { useRecoilState } from "recoil";
-import { drawerState } from "../store/common";
+import { drawerState, isDarkModeState } from "../store/common";
 import { theme, toggleDrawer } from "./common";
 import Link from "next/link";
 

@@ -1,9 +1,10 @@
-import { CircularProgress } from "@mui/material";
+import { Alert, CircularProgress, Snackbar } from "@mui/material";
 import { NextPage } from "next";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "react-query";
-import { apiUrl } from "../store/common";
+import { useRecoilState } from "recoil";
+import { apiUrl, linkSnackbarOpenState } from "../store/common";
 import { ItemProps } from "./api";
 import ItemCard from "./itemCard";
 
@@ -31,7 +32,9 @@ const ItemContainer: NextPage<{
   pathFilter: string;
 }> = ({ collectionName, domainFilter, pathFilter }) => {
   const { ref, inView } = useInView();
-
+  const [isLinkSnackbarOpen, setIsLinkSnackbarOpen] = useRecoilState(
+    linkSnackbarOpenState
+  );
   // Declare a new query hook
   const {
     data,
@@ -103,6 +106,16 @@ const ItemContainer: NextPage<{
           </div>
         </div>
       )}
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        open={isLinkSnackbarOpen}
+        autoHideDuration={1500}
+        onClose={() => setIsLinkSnackbarOpen(false)}
+      >
+        <Alert className="font-semibold" severity="info">
+          Link Copied to Clipboard
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

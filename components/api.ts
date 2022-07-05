@@ -11,11 +11,19 @@ export interface ItemProps {
   path: string;
 }
 
-const deleteCall = (item: ItemProps, collectionName: string) => {
-  console.log(collectionName, item.id);
-  return fetch(`${apiUrl}/item/${collectionName}/${item.id}`, {
+const deleteCall = (itemId: string, collectionName: string) => {
+  console.log(collectionName, itemId);
+  return fetch(`${apiUrl}/item/${collectionName}/${itemId}`, {
     method: "DELETE",
   });
+};
+
+const trashCall = (item: ItemProps, origin: string) => {
+  return fetch(`${apiUrl}/item/move/${item.id}?target=trash&origin=${origin}`);
+};
+
+const restoreCall = (item: ItemProps) => {
+  return fetch(`${apiUrl}/item/move/${item.id}?target=new&origin=trash`);
 };
 
 const keepCall = (item: ItemProps, from: string) => {
@@ -42,6 +50,25 @@ const getBookmarkListCall = async () => {
   return json;
 };
 
+const getCollectionListCall = async () => {
+  const response = await fetch(`${apiUrl}/collection`);
+  const json = await response.json();
+  return json;
+};
+
+const clearCollectionCall = (collectionName: string) => {
+  return fetch(`${apiUrl}/collection/${collectionName}`, {
+    method: "DELETE",
+  });
+};
+
+const manualCrawlCall = async () => {
+  let bpCrawlResult = await fetch(`${apiUrl}/crawl/bp`);
+  let isgCrawlResult = await fetch(`${apiUrl}/crawl/isg`);
+  console.log(bpCrawlResult, isgCrawlResult);
+  return { bpCrawlResult, isgCrawlResult };
+};
+
 const sendToBookmarkCall = (item: ItemProps, path: string, origin: string) => {
   return fetch(`${apiUrl}/item/bookmark?from=${origin}&path=${path}`, {
     method: "POST",
@@ -55,8 +82,13 @@ const sendToBookmarkCall = (item: ItemProps, path: string, origin: string) => {
 export {
   deleteCall,
   keepCall,
+  restoreCall,
+  trashCall,
   raindropCollectionListCall,
   makeRaindropCall,
   getBookmarkListCall,
   sendToBookmarkCall,
+  getCollectionListCall,
+  clearCollectionCall,
+  manualCrawlCall,
 };

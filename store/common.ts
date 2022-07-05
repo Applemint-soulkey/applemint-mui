@@ -34,6 +34,26 @@ const bookmarkModalOpenState = atom({
   default: false,
 });
 
+const linkSnackbarOpenState = atom({
+  key: "linkSnackbarOpenState",
+  default: false,
+});
+
+const showThumbnailState = atom({
+  key: "showThumbnailState",
+  default: true,
+});
+
+const galleryColumnCountState = atom({
+  key: "galleryColumnCountState",
+  default: 3,
+});
+
+const isDarkModeState = atom({
+  key: "isDarkModeState",
+  default: false,
+});
+
 export {
   drawerState,
   filterListState,
@@ -41,5 +61,9 @@ export {
   raindropModalOpenState,
   ModalItemState,
   bookmarkModalOpenState,
+  linkSnackbarOpenState,
   apiUrl,
+  showThumbnailState,
+  galleryColumnCountState,
+  isDarkModeState,
 };
