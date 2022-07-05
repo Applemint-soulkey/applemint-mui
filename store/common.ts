@@ -34,6 +34,11 @@ const bookmarkModalOpenState = atom({
   default: false,
 });
 
+const linkSnackbarOpenState = atom({
+  key: "linkSnackbarOpenState",
+  default: false,
+});
+
 export {
   drawerState,
   filterListState,
@@ -41,5 +46,6 @@ export {
   raindropModalOpenState,
   ModalItemState,
   bookmarkModalOpenState,
+  linkSnackbarOpenState,
   apiUrl,
 };

@@ -18,6 +18,14 @@ const deleteCall = (itemId: string, collectionName: string) => {
   });
 };
 
+const trashCall = (item: ItemProps, origin: string) => {
+  return fetch(`${apiUrl}/item/move/${item.id}?target=trash&origin=${origin}`);
+};
+
+const restoreCall = (item: ItemProps) => {
+  return fetch(`${apiUrl}/item/move/${item.id}?target=new&origin=trash`);
+};
+
 const keepCall = (item: ItemProps, from: string) => {
   return fetch(`${apiUrl}/item/move/${item.id}?target=keep&origin=${from}`);
 };
@@ -55,6 +63,8 @@ const sendToBookmarkCall = (item: ItemProps, path: string, origin: string) => {
 export {
   deleteCall,
   keepCall,
+  restoreCall,
+  trashCall,
   raindropCollectionListCall,
   makeRaindropCall,
   getBookmarkListCall,
