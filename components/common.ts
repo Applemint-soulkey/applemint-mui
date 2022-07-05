@@ -1,6 +1,17 @@
 import { createTheme } from "@mui/material";
 import { SetterOrUpdater } from "recoil";
 
+export const darkTheme = createTheme({
+  palette: {
+    primary: {
+      main: "#2196f3",
+    },
+    secondary: {
+      main: "#f50057",
+    },
+  },
+});
+
 export const theme = createTheme({
   palette: {
     primary: {
