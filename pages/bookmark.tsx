@@ -66,8 +66,8 @@ const Bookmark: NextPage = () => {
       <Head>
         <title>Bookmark</title>
       </Head>
-      <Typography variant="h3" className="flex-1 font-extrabold">
-        Bookmark
+      <Typography variant="h3" className="flex-1">
+        <span className="font-extrabold">Bookmark</span>
       </Typography>
       <Divider />
       <Box

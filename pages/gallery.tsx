@@ -141,8 +141,8 @@ const Gallery: NextPage<{}> = () => {
         <title>Gallery</title>
       </Head>
       <div id="info_container" className="flex items-end">
-        <Typography variant="h3" className="flex-1 font-extrabold">
-          Gallery
+        <Typography variant="h3" className="flex-1">
+          <span className="font-extrabold">Gallery</span>
         </Typography>
         <GalleryInfo />
       </div>

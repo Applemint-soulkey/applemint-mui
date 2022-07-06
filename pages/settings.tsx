@@ -122,18 +122,18 @@ const Settings: NextPage = () => {
       </Head>
       <CollectionClearDialog />
       <ManualCrawlDialog />
-      <Typography variant="h3" className="flex-1 font-extrabold">
-        Settings
+      <Typography variant="h3" className="flex-1">
+        <span className="font-bold">Settings</span>
       </Typography>
       <Divider />
       <Box className="my-3">
-        <Typography variant="h5" className="font-bold">
-          Common
+        <Typography variant="h5">
+          <span className="font-bold">Common</span>
         </Typography>
         <Box className="my-3 flex flex-col gap-3">
           <div className="flex flex-row items-center">
             <Typography variant="body1" className="flex-1">
-              Dark Mode
+              <span className="font-pretend">Dark Mode</span>
             </Typography>
             <Switch
               disabled
@@ -145,15 +145,15 @@ const Settings: NextPage = () => {
           </div>
           <div className="flex flex-row items-center">
             <Typography variant="body1" className="flex-1">
-              Manual Crawl
+              <span className="font-pretend">Manual Crawl</span>
             </Typography>
             <Button onClick={() => setIsManualClearDialogOpen(true)}>
-              Crawl
+              <span className="font-pretend">Crawl</span>
             </Button>
           </div>
           <div className="flex flex-row items-center">
             <Typography variant="body1" className="flex-1">
-              Clear Collection
+              <span className="font-pretend">Clear Collection</span>
             </Typography>
             <Box sx={{ minWidth: 120 }}>
               <FormControl fullWidth size="small">
@@ -180,18 +180,20 @@ const Settings: NextPage = () => {
                 </Select>
               </FormControl>
             </Box>
-            <Button onClick={() => setIsClearDialogOpen(true)}>Clear</Button>
+            <Button onClick={() => setIsClearDialogOpen(true)}>
+              <span className="font-pretend">Clear</span>
+            </Button>
           </div>
         </Box>
         <Divider className="my-3" />
 
-        <Typography variant="h5" className="font-bold">
-          Gallery
+        <Typography variant="h5">
+          <span className="font-bold">Gallery</span>
         </Typography>
         <Box className="my-3">
           <div className="flex flex-row items-center">
             <Typography variant="body1" className="flex-1">
-              Show thumbnails
+              <span className="font-pretend">Show Thumbnail</span>
             </Typography>
             <Switch
               checked={showThumbnail}
@@ -202,7 +204,7 @@ const Settings: NextPage = () => {
           </div>
           <div className="flex flex-row items-center">
             <Typography variant="body1" className="flex-1">
-              Gallery Column Rows
+              <span className="font-pretend">Column Count</span>
             </Typography>
             <FormControl size="small">
               <Select

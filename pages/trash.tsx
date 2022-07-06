@@ -12,8 +12,8 @@ const Trash: NextPage = () => {
         <title>Trash</title>
       </Head>
       <div id="info_container" className="flex items-end">
-        <Typography variant="h3" className="flex-1 font-extrabold">
-          Trash
+        <Typography variant="h3" className="flex-1">
+          <span className="font-extrabold">Trash</span>
         </Typography>
       </div>
       <Divider />

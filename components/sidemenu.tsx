@@ -36,8 +36,8 @@ export const SideMenu: NextPage = () => {
       <Box className="w-60" onClick={toggleDrawer(drawerOpen, setDrawerOpen)}>
         <List>
           <ListSubheader className="sm:my-2 my-1 bg-primary">
-            <Typography className="font-extrabold text-black" variant="h5">
-              Applemint
+            <Typography variant="h5">
+              <span className="font-extrabold text-black">Applemint</span>
             </Typography>
           </ListSubheader>
         </List>
