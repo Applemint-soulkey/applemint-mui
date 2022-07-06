@@ -1,4 +1,4 @@
-import { Alert, CircularProgress, Snackbar } from "@mui/material";
+import { Alert, Card, CircularProgress, Snackbar } from "@mui/material";
 import { NextPage } from "next";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
