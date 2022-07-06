@@ -1,7 +1,7 @@
-import { createTheme } from "@mui/material";
+import { createTheme, responsiveFontSizes } from "@mui/material";
 import { SetterOrUpdater } from "recoil";
 
-export const theme = createTheme({
+let theme = createTheme({
   palette: {
     primary: {
       main: "#00bcd4",
@@ -52,7 +52,9 @@ export const theme = createTheme({
   },
 });
 
-export const toggleDrawer =
+theme = responsiveFontSizes(theme);
+
+const toggleDrawer =
   (open: boolean, setDrawerOpen: SetterOrUpdater<boolean>) => (event: any) => {
     if (
       event.type === "keydown" &&
@@ -62,3 +64,5 @@ export const toggleDrawer =
     }
     setDrawerOpen(!open);
   };
+
+export { theme, toggleDrawer };

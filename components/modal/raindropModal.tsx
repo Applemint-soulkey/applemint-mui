@@ -73,7 +73,7 @@ const RaindropModal: NextPage<{
       ) : (
         <>
           <DialogContent>
-            <Box className="flex flex-col gap-3 mt-3 w-96">
+            <Box className="flex flex-col gap-3 mt-3 sm:w-96">
               <TextField label="Title" value={data.text_content} />
               <TextField label="URL" fullWidth disabled value={data.url} />
               <Select

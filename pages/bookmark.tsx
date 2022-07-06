@@ -31,9 +31,7 @@ function TabPanel(props: TabPanelProps) {
       aria-labelledby={`vertical-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box className="flex flex-1 container pl-5">{children}</Box>
-      )}
+      {value === index && <Box className="">{children}</Box>}
     </div>
   );
 }
@@ -66,24 +64,23 @@ const Bookmark: NextPage = () => {
       <Head>
         <title>Bookmark</title>
       </Head>
-      <Typography variant="h3" className="flex-1">
-        <span className="font-extrabold">Bookmark</span>
-      </Typography>
-      <Divider />
+      <div className="">
+        <Typography variant="h3" className="flex-1">
+          <span className="font-extrabold">Bookmark</span>
+        </Typography>
+        <Divider />
+      </div>
       <Box
         sx={{
-          flexGrow: 1,
           bgcolor: "background.paper",
-          display: "flex",
         }}
       >
         <Tabs
-          orientation="vertical"
-          variant="scrollable"
           value={value}
           onChange={handleChange}
-          aria-label="Vertical tabs example"
-          sx={{ borderRight: 1, borderColor: "divider" }}
+          variant="scrollable"
+          scrollButtons="auto"
+          sx={{ borderColor: "divider" }}
         >
           {data?.map((item: any, index: number) => (
             <Tab
@@ -94,17 +91,15 @@ const Bookmark: NextPage = () => {
             />
           ))}
         </Tabs>
-        <div className="flex flex-1 flex-col">
-          {data?.map((item: any, index: number) => (
-            <TabPanel key={index} value={value} index={index}>
-              <ItemContainer
-                collectionName="bookmark"
-                domainFilter=""
-                pathFilter={item.Path}
-              />
-            </TabPanel>
-          ))}
-        </div>
+        {data?.map((item: any, index: number) => (
+          <TabPanel key={index} value={value} index={index}>
+            <ItemContainer
+              collectionName="bookmark"
+              domainFilter=""
+              pathFilter={item.Path}
+            />
+          </TabPanel>
+        ))}
         <RaindropModal
           raindropOpen={raindropModalOpen}
           setRaindropOpen={setRaindropModalOpen}
