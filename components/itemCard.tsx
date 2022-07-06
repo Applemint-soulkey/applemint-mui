@@ -86,14 +86,14 @@ const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
         <a target={`_blank`}>
           <CardActionArea>
             <CardContent>
-              <Typography variant="h4">
+              <Typography variant="h5">
                 <span className="font-semibold">
                   {itemData.text_content !== ""
                     ? itemData.text_content
                     : itemData.domain}
                 </span>
               </Typography>
-              <Typography variant="body1">
+              <Typography variant="caption" overflow={"hidden"}>
                 <span>{itemData.url}</span>
               </Typography>
             </CardContent>

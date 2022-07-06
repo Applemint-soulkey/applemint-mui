@@ -50,8 +50,8 @@ const Keep: NextPage = () => {
         <title>Keep</title>
       </Head>
       <div id="info_container" className="flex items-end">
-        <Typography variant="h3" className="flex-1 font-extrabold">
-          Keep
+        <Typography variant="h3" className="flex-1">
+          <span className="font-extrabold">Keep</span>
         </Typography>
         <div id="info_breadcumb" className="flex items-end">
           <Typography variant="h6" className="mb-1">

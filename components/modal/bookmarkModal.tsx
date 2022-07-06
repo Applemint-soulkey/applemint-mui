@@ -75,11 +75,21 @@ const BookmarkModal: NextPage<{
       ) : (
         <>
           <DialogContent>
-            <Box className="flex flex-col gap-3 w-96 pt-2">
-              <TextField label="Title" value={itemData.text_content} />
-              <TextField label="URL" fullWidth disabled value={itemData.url} />
+            <Box className="flex flex-col gap-3 sm:w-96 pt-2">
+              <TextField
+                className="w-fill"
+                label="Title"
+                value={itemData.text_content}
+              />
+              <TextField
+                className="w-fill"
+                label="URL"
+                disabled
+                value={itemData.url}
+              />
               <Autocomplete
                 freeSolo
+                className="w-fill"
                 options={list ? list : []}
                 id="combo-box-bookmark"
                 renderInput={(params) => (
