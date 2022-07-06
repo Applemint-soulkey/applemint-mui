@@ -6,6 +6,7 @@ import {
   CardActions,
   Chip,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FlagIcon from "@mui/icons-material/Flag";
@@ -24,6 +25,7 @@ import {
   ModalItemState,
   linkSnackbarOpenState,
 } from "../store/common";
+import { useState } from "react";
 
 const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
   itemData,
@@ -38,6 +40,7 @@ const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
     setModalItemData(item);
     setRaindropModalOpen(true);
   };
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const copyLinkToClipBoard = (url: string) => {
     navigator.clipboard.writeText(url);
@@ -47,6 +50,39 @@ const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
   const sendToBookmarkDialog = (item: ItemProps) => {
     setModalItemData(item);
     setBookmarkModalOpen(true);
+  };
+
+  const handleOnMutate = async (
+    queryClient: QueryClient,
+    collectionName: string
+  ) => {
+    setIsProcessing(true);
+    await queryClient.cancelQueries(collectionName + "Items");
+    const previouseItems = await queryClient.getQueryData(
+      collectionName + "Items"
+    );
+    setIsProcessing(false);
+    return { previouseItems };
+  };
+
+  const handleOnSuccess = (
+    queryClient: QueryClient,
+    collectionName: string
+  ) => {
+    console.log("delete success");
+    queryClient.invalidateQueries(collectionName + "Items");
+    queryClient.invalidateQueries(collectionName + "Info");
+  };
+
+  const handleOnError = (
+    queryClient: QueryClient,
+    collectionName: string,
+    err: unknown
+  ) => {
+    console.log("delete error => ", err);
+    queryClient.invalidateQueries(collectionName + "Items");
+    queryClient.invalidateQueries(collectionName + "Info");
+    //TODO show Eror Message Popup
   };
 
   const trashMutation = useMutation(() => trashCall(itemData, collectionName), {
@@ -82,25 +118,28 @@ const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
 
   return (
     <Card>
-      <Link href={itemData.url} passHref>
-        <a target={`_blank`}>
-          <CardActionArea>
-            <CardContent>
-              <Typography variant="h5">
-                <span className="font-semibold">
-                  {itemData.text_content !== ""
-                    ? itemData.text_content
-                    : itemData.domain}
-                </span>
-              </Typography>
-              <Typography variant="caption" overflow={"hidden"}>
-                <span>{itemData.url}</span>
-              </Typography>
-            </CardContent>
-          </CardActionArea>
-        </a>
-      </Link>
-
+      {isProcessing ? (
+        <CircularProgress />
+      ) : (
+        <Link href={itemData.url} passHref>
+          <a target={`_blank`}>
+            <CardActionArea>
+              <CardContent>
+                <Typography variant="h5">
+                  <span className="font-semibold">
+                    {itemData.text_content !== ""
+                      ? itemData.text_content
+                      : itemData.domain}
+                  </span>
+                </Typography>
+                <Typography variant="caption" overflow={"hidden"}>
+                  <span>{itemData.url}</span>
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+          </a>
+        </Link>
+      )}
       <CardActions className="flex">
         <div className="flex-1">
           <Chip label={itemData.domain} />
@@ -148,34 +187,6 @@ const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
       </CardActions>
     </Card>
   );
-};
-
-const handleOnMutate = async (
-  queryClient: QueryClient,
-  collectionName: string
-) => {
-  await queryClient.cancelQueries(collectionName + "Items");
-  const previouseItems = await queryClient.getQueryData(
-    collectionName + "Items"
-  );
-  return { previouseItems };
-};
-
-const handleOnSuccess = (queryClient: QueryClient, collectionName: string) => {
-  console.log("delete success");
-  queryClient.invalidateQueries(collectionName + "Items");
-  queryClient.invalidateQueries(collectionName + "Info");
-};
-
-const handleOnError = (
-  queryClient: QueryClient,
-  collectionName: string,
-  err: unknown
-) => {
-  console.log("delete error => ", err);
-  queryClient.invalidateQueries(collectionName + "Items");
-  queryClient.invalidateQueries(collectionName + "Info");
-  //TODO show Eror Message Popup
 };
 
 export default ItemCard;

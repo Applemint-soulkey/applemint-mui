@@ -163,9 +163,9 @@ const Gallery: NextPage<{}> = () => {
                         item.link.includes(".mp4") ? (
                           <video
                             src={item.link}
-                            controls
                             autoPlay
                             muted
+                            controls={false}
                             className="w-full h-full"
                             onClick={() => {
                               setCurrentItem(item);
