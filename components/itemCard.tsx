@@ -57,11 +57,11 @@ const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
     collectionName: string
   ) => {
     setIsProcessing(true);
+
     await queryClient.cancelQueries(collectionName + "Items");
     const previouseItems = await queryClient.getQueryData(
       collectionName + "Items"
     );
-    setIsProcessing(false);
     return { previouseItems };
   };
 
@@ -69,7 +69,6 @@ const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
     queryClient: QueryClient,
     collectionName: string
   ) => {
-    console.log("delete success");
     queryClient.invalidateQueries(collectionName + "Items");
     queryClient.invalidateQueries(collectionName + "Info");
   };
@@ -86,7 +85,9 @@ const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
   };
 
   const trashMutation = useMutation(() => trashCall(itemData, collectionName), {
-    onMutate: async () => await handleOnMutate(queryClient, collectionName),
+    onMutate: async () => {
+      await handleOnMutate(queryClient, collectionName);
+    },
     onSuccess: () => handleOnSuccess(queryClient, collectionName),
     onError: (err) => handleOnError(queryClient, collectionName, err),
     onSettled: () => handleOnSuccess(queryClient, collectionName),
@@ -119,72 +120,76 @@ const ItemCard: NextPage<{ itemData: ItemProps; collectionName: string }> = ({
   return (
     <Card>
       {isProcessing ? (
-        <CircularProgress />
-      ) : (
-        <Link href={itemData.url} passHref>
-          <a target={`_blank`}>
-            <CardActionArea>
-              <CardContent>
-                <Typography variant="h5">
-                  <span className="font-semibold">
-                    {itemData.text_content !== ""
-                      ? itemData.text_content
-                      : itemData.domain}
-                  </span>
-                </Typography>
-                <Typography variant="caption" overflow={"hidden"}>
-                  <span>{itemData.url}</span>
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-          </a>
-        </Link>
-      )}
-      <CardActions className="flex">
-        <div className="flex-1">
-          <Chip label={itemData.domain} />
+        <div className="flex justify-center items-center p-3">
+          <CircularProgress />
         </div>
-        {collectionName === "trash" && (
-          <IconButton onClick={() => restoreMutation.mutate()}>
-            <UndoIcon />
-          </IconButton>
-        )}
-        <IconButton
-          onClick={() => {
-            if (collectionName === "trash") {
-              deleteMutation.mutate();
-            } else {
-              trashMutation.mutate();
-            }
-          }}
-        >
-          <DeleteIcon />
-        </IconButton>
-        {collectionName === "keep" ||
-        collectionName === "bookmark" ||
-        collectionName === "trash" ? (
-          <></>
-        ) : (
-          <IconButton onClick={() => keepMutation.mutate()}>
-            <FlagIcon />
-          </IconButton>
-        )}
-        {collectionName === "trash" ? (
-          <></>
-        ) : (
-          <>
-            <IconButton onClick={() => sendToBookmarkDialog(itemData)}>
-              <BookmarkIcon />
+      ) : (
+        <>
+          <Link href={itemData.url} passHref>
+            <a target={`_blank`}>
+              <CardActionArea>
+                <CardContent>
+                  <Typography variant="h5">
+                    <span className="font-semibold">
+                      {itemData.text_content !== ""
+                        ? itemData.text_content
+                        : itemData.domain}
+                    </span>
+                  </Typography>
+                  <Typography variant="caption" overflow={"hidden"}>
+                    <span>{itemData.url}</span>
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </a>
+          </Link>
+          <CardActions className="flex">
+            <div className="flex-1">
+              <Chip label={itemData.domain} />
+            </div>
+            {collectionName === "trash" && (
+              <IconButton onClick={() => restoreMutation.mutate()}>
+                <UndoIcon />
+              </IconButton>
+            )}
+            <IconButton
+              onClick={() => {
+                if (collectionName === "trash") {
+                  deleteMutation.mutate();
+                } else {
+                  trashMutation.mutate();
+                }
+              }}
+            >
+              <DeleteIcon />
             </IconButton>
-            <IconButton onClick={() => sendToRaindropDialog(itemData)}>
-              <InvertColorsIcon />
-            </IconButton>
-            <IconButton onClick={() => copyLinkToClipBoard(itemData.url)}>
-              <LinkIcon />
-            </IconButton>
-          </>
-        )}
-      </CardActions>
+            {collectionName === "keep" ||
+            collectionName === "bookmark" ||
+            collectionName === "trash" ? (
+              <></>
+            ) : (
+              <IconButton onClick={() => keepMutation.mutate()}>
+                <FlagIcon />
+              </IconButton>
+            )}
+            {collectionName === "trash" ? (
+              <></>
+            ) : (
+              <>
+                <IconButton onClick={() => sendToBookmarkDialog(itemData)}>
+                  <BookmarkIcon />
+                </IconButton>
+                <IconButton onClick={() => sendToRaindropDialog(itemData)}>
+                  <InvertColorsIcon />
+                </IconButton>
+                <IconButton onClick={() => copyLinkToClipBoard(itemData.url)}>
+                  <LinkIcon />
+                </IconButton>
+              </>
+            )}
+          </CardActions>
+        </>
+      )}
     </Card>
   );
 };
