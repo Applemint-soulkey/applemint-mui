@@ -158,7 +158,7 @@ const Gallery: NextPage<{}> = () => {
               {data!!.pages.map((page) =>
                 page?.data.map((item: GalleryItemProps) => {
                   return (
-                    <ImageListItem key={item.link}>
+                    <ImageListItem key={item.link} className="max-h-48">
                       {showThumbnail ? (
                         item.link.includes(".mp4") ? (
                           <video
