@@ -137,7 +137,13 @@ const Gallery: NextPage<{}> = () => {
 
   // Image List Item
   const GalleryItem: NextPage<{ item: GalleryItemProps }> = ({ item }) => {
-    return (
+    const [isDeleteProgress, setIsDeleteProgress] = useState(false);
+
+    return isDeleteProgress ? (
+      <ImageListItem>
+        <CircularProgress />
+      </ImageListItem>
+    ) : (
       <ImageListItem key={item.link} className="max-h-48">
         {showThumbnail ? (
           item.link.includes(".mp4") ? (
@@ -183,6 +189,7 @@ const Gallery: NextPage<{}> = () => {
               color="secondary"
               aria-label={`info about ${item.text}`}
               onClick={() => {
+                setIsDeleteProgress(true);
                 deleteMutation.mutate(item.id);
               }}
             >
