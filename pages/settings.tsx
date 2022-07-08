@@ -166,7 +166,7 @@ const Settings: NextPage = () => {
                     setTargetCollection(event.target.value);
                   }}
                 >
-                  {data?.collections.map((collection: string) => (
+                  {data?.map((collection: string) => (
                     <MenuItem
                       key={collection}
                       value={collection}

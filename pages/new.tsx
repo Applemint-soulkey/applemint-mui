@@ -25,6 +25,7 @@ import RaindropModal from "../components/modal/raindropModal";
 import BookmarkModal from "../components/modal/bookmarkModal";
 import ChipFilter from "../components/chipFilter";
 import ItemContainer from "../components/itemContainer";
+import { getCollectionInfoCall } from "../components/api";
 
 const New: NextPage = () => {
   const collectionName = "new";
@@ -38,9 +39,7 @@ const New: NextPage = () => {
     bookmarkModalOpenState
   );
   const { data } = useQuery(collectionName + "Info", async () => {
-    const res = await fetch(`${apiUrl}/collection/info/${collectionName}`);
-    const json = await res.json();
-    return json;
+    return await getCollectionInfoCall(collectionName);
   });
 
   return (

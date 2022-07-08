@@ -31,12 +31,12 @@ const keepCall = (item: ItemProps, from: string) => {
 };
 
 const raindropCollectionListCall = () => {
-  return fetch(`${apiUrl}/raindrop/collections`);
+  return fetch(`${apiUrl}/raindrop/list`);
 };
 
 const makeRaindropCall = (item: ItemProps, collectionId: string) => {
   return fetch(`${apiUrl}/raindrop/${collectionId}`, {
-    method: "POST",
+    method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
@@ -44,20 +44,38 @@ const makeRaindropCall = (item: ItemProps, collectionId: string) => {
   });
 };
 
+const getCollectionItemsCall = async (
+  pageParam = 0,
+  collectionName: string,
+  domainFilter = "",
+  pathFilter = ""
+) => {
+  const res = await fetch(
+    `${apiUrl}/collection/${collectionName}?cursor=${pageParam}&domain=${domainFilter}&path=${pathFilter}`
+  );
+  const json = await res.json();
+  return json;
+};
+
+const getCollectionInfoCall = async (collectionName: string) => {
+  const res = await fetch(`${apiUrl}/collection/${collectionName}/info`);
+  return await res.json();
+};
+
 const getBookmarkListCall = async () => {
-  const response = await fetch(`${apiUrl}/item/bookmark`);
+  const response = await fetch(`${apiUrl}/item/bookmark/list`);
   const json = await response.json();
   return json;
 };
 
 const getCollectionListCall = async () => {
-  const response = await fetch(`${apiUrl}/collection`);
+  const response = await fetch(`${apiUrl}/collection/list`);
   const json = await response.json();
   return json;
 };
 
 const clearCollectionCall = (collectionName: string) => {
-  return fetch(`${apiUrl}/collection/${collectionName}`, {
+  return fetch(`${apiUrl}/collection/${collectionName}/clear`, {
     method: "DELETE",
   });
 };
@@ -71,12 +89,23 @@ const manualCrawlCall = async () => {
 
 const sendToBookmarkCall = (item: ItemProps, path: string, origin: string) => {
   return fetch(`${apiUrl}/item/bookmark?from=${origin}&path=${path}`, {
-    method: "POST",
+    method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(item),
   });
+};
+
+const dropboxCall = async (link: string, path: string) => {
+  const res = await fetch(`${apiUrl}/dropbox?path=${path}&url=${link}`);
+  return await res.json();
+};
+
+const galleryItemsCall = async (pageParam = 0) => {
+  const res = await fetch(`${apiUrl}/gallery?cursor=${pageParam}`);
+  const json = await res.json();
+  return json;
 };
 
 export {
@@ -91,4 +120,8 @@ export {
   getCollectionListCall,
   clearCollectionCall,
   manualCrawlCall,
+  getCollectionItemsCall,
+  getCollectionInfoCall,
+  dropboxCall,
+  galleryItemsCall,
 };

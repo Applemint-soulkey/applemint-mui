@@ -25,6 +25,7 @@ import RaindropModal from "../components/modal/raindropModal";
 import BookmarkModal from "../components/modal/bookmarkModal";
 import ChipFilter from "../components/chipFilter";
 import ItemContainer from "../components/itemContainer";
+import { getCollectionInfoCall } from "../components/api";
 
 const Keep: NextPage = () => {
   const collectionName = "keep";
@@ -39,9 +40,7 @@ const Keep: NextPage = () => {
   );
 
   const { data } = useQuery(collectionName + "Info", async () => {
-    const res = await fetch(`${apiUrl}/collection/info/${collectionName}`);
-    const json = await res.json();
-    return json;
+    return await getCollectionInfoCall(collectionName);
   });
 
   return (

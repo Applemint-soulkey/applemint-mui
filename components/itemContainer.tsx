@@ -5,7 +5,7 @@ import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "react-query";
 import { useRecoilState } from "recoil";
 import { apiUrl, linkSnackbarOpenState } from "../store/common";
-import { ItemProps } from "./api";
+import { getCollectionItemsCall, ItemProps } from "./api";
 import ItemCard from "./itemCard";
 
 const PAGE_SIZE = 20;
@@ -16,10 +16,17 @@ const handleNewItemsFetch = async (
   domainFilter = "",
   pathFilter = ""
 ) => {
-  const res = await fetch(
-    `${apiUrl}/items/${collectionName}?cursor=${pageParam}&domain=${domainFilter}&path=${pathFilter}`
+  // const res = await fetch(
+  //   `${apiUrl}/collection/${collectionName}?cursor=${pageParam}&domain=${domainFilter}&path=${pathFilter}`
+  // );
+  // const json = await res.json();
+
+  const json = await getCollectionItemsCall(
+    pageParam,
+    collectionName,
+    domainFilter,
+    pathFilter
   );
-  const json = await res.json();
   return {
     data: json,
     nextCursor: json.length > 0 ? pageParam + PAGE_SIZE : undefined,
