@@ -135,112 +135,67 @@ const Gallery: NextPage<{}> = () => {
     }
   }, [inView]);
 
-  return (
-    <div className="container flex flex-col p-3 sm:p-10">
-      <Head>
-        <title>Gallery</title>
-      </Head>
-      <div id="info_container" className="flex items-end">
-        <Typography variant="h3" className="flex-1">
-          <span className="font-extrabold">Gallery</span>
-        </Typography>
-        <GalleryInfo />
-      </div>
-      <Divider />
-      <div className="flex-1 mt-5">
-        {status === "loading" ? (
-          <div>Loading...</div>
-        ) : status === "error" ? (
-          <p>{(error as Error).message}</p>
-        ) : (
-          <>
-            <ImageList cols={galleryColumnCount}>
-              {data!!.pages.map((page) =>
-                page?.data.map((item: GalleryItemProps) => {
-                  return (
-                    <ImageListItem key={item.link} className="max-h-48">
-                      {showThumbnail ? (
-                        item.link.includes(".mp4") ? (
-                          <video
-                            src={item.link}
-                            autoPlay
-                            muted
-                            controls={false}
-                            className="w-full h-full"
-                            onClick={() => {
-                              setCurrentItem(item);
-                              setOpen(true);
-                            }}
-                          />
-                        ) : (
-                          <img
-                            src={item.link}
-                            loading="lazy"
-                            className="bg-white overflow-hidden"
-                            onClick={() => {
-                              setCurrentItem(item);
-                              setOpen(true);
-                            }}
-                          />
-                        )
-                      ) : (
-                        <Image
-                          src="/image_placeholder.jpg"
-                          width={128}
-                          height={128}
-                          layout="responsive"
-                          onClick={() => {
-                            setCurrentItem(item);
-                            setOpen(true);
-                          }}
-                        />
-                      )}
-
-                      <ImageListItemBar
-                        title={item.text === "" ? "Untitled" : item.text}
-                        subtitle={item.link}
-                        actionIcon={
-                          <IconButton
-                            color="secondary"
-                            aria-label={`info about ${item.text}`}
-                            onClick={() => {
-                              deleteMutation.mutate(item.id);
-                            }}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        }
-                      />
-                    </ImageListItem>
-                  );
-                })
-              )}
-            </ImageList>
-          </>
-        )}
-      </div>
-      <div>
-        <button
-          ref={ref}
-          onClick={() => fetchNextPage()}
-          disabled={!hasNextPage || isFetchingNextPage}
-          className="flex items-center justify-center w-full h-12 bg-gray-200 rounded-md"
-        >
-          {isFetchingNextPage ? (
-            <CircularProgress />
-          ) : hasNextPage ? (
-            <CircularProgress />
+  // Image List Item
+  const GalleryItem: NextPage<{ item: GalleryItemProps }> = ({ item }) => {
+    return (
+      <ImageListItem key={item.link} className="max-h-48">
+        {showThumbnail ? (
+          item.link.includes(".mp4") ? (
+            <video
+              src={item.link}
+              autoPlay
+              muted
+              controls={false}
+              className="w-full h-full"
+              onClick={() => {
+                setCurrentItem(item);
+                setOpen(true);
+              }}
+            />
           ) : (
-            <></>
-          )}
-        </button>
-      </div>
-      <Snackbar
-        open={dropboxSnackbarOpen}
-        autoHideDuration={3000}
-        onClose={handleSnackbarClose}
-        message={`${currentItem?.text} save to Dropbox Request`}
-      />
+            <img
+              src={item.link}
+              loading="lazy"
+              className="bg-white overflow-hidden"
+              onClick={() => {
+                setCurrentItem(item);
+                setOpen(true);
+              }}
+            />
+          )
+        ) : (
+          <Image
+            src="/image_placeholder.jpg"
+            width={128}
+            height={128}
+            layout="responsive"
+            onClick={() => {
+              setCurrentItem(item);
+              setOpen(true);
+            }}
+          />
+        )}
+        <ImageListItemBar
+          title={item.text === "" ? "Untitled" : item.text}
+          subtitle={item.link}
+          actionIcon={
+            <IconButton
+              color="secondary"
+              aria-label={`info about ${item.text}`}
+              onClick={() => {
+                deleteMutation.mutate(item.id);
+              }}
+            >
+              <DeleteIcon />
+            </IconButton>
+          }
+        />
+      </ImageListItem>
+    );
+  };
+
+  const GalleryDetailDialog: NextPage = () => {
+    return (
       <Dialog fullWidth open={open} onClose={() => setOpen(false)}>
         <DialogTitle>{currentItem?.text}</DialogTitle>
         <DialogContent>
@@ -284,6 +239,61 @@ const Gallery: NextPage<{}> = () => {
           </Button>
         </DialogActions>
       </Dialog>
+    );
+  };
+
+  return (
+    <div className="container flex flex-col p-3 sm:p-10">
+      <Head>
+        <title>Gallery</title>
+      </Head>
+      <div id="info_container" className="flex items-end">
+        <Typography variant="h3" className="flex-1">
+          <span className="font-extrabold">Gallery</span>
+        </Typography>
+        <GalleryInfo />
+      </div>
+      <Divider />
+      <div className="flex-1 mt-5">
+        {status === "loading" ? (
+          <div>Loading...</div>
+        ) : status === "error" ? (
+          <p>{(error as Error).message}</p>
+        ) : (
+          <>
+            <ImageList cols={galleryColumnCount}>
+              {data!!.pages.map((page) =>
+                page?.data.map((item: GalleryItemProps) => {
+                  return <GalleryItem key={item.link} item={item} />;
+                })
+              )}
+            </ImageList>
+          </>
+        )}
+      </div>
+      <div>
+        <button
+          ref={ref}
+          onClick={() => fetchNextPage()}
+          disabled={!hasNextPage || isFetchingNextPage}
+          className="flex items-center justify-center w-full h-12 bg-gray-200 rounded-md"
+        >
+          {isFetchingNextPage ? (
+            <CircularProgress />
+          ) : hasNextPage ? (
+            <CircularProgress />
+          ) : (
+            <></>
+          )}
+        </button>
+      </div>
+      <Snackbar
+        open={dropboxSnackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        message={`${currentItem?.text} save to Dropbox Request`}
+      />
+      <GalleryDetailDialog />
     </div>
   );
 };
