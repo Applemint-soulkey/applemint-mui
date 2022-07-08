@@ -30,7 +30,12 @@ import {
   showThumbnailState,
 } from "../store/common";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { deleteCall } from "../components/api";
+import {
+  deleteCall,
+  dropboxCall,
+  galleryItemsCall,
+  getCollectionInfoCall,
+} from "../components/api";
 import { useRecoilValue } from "recoil";
 
 const PAGE_SIZE = 20;
@@ -42,8 +47,9 @@ type GalleryItemProps = {
 };
 
 const handleGalleryItemsFetch = async ({ pageParam = 0 }) => {
-  const res = await fetch(`${apiUrl}/gallery?cursor=${pageParam}`);
-  const json = await res.json();
+  // const res = await fetch(`${apiUrl}/gallery?cursor=${pageParam}`);
+  // const json = await res.json();
+  const json = await galleryItemsCall(pageParam);
   return {
     data: json.items,
     nextCursor: json.items.length > 0 ? pageParam + PAGE_SIZE : undefined,
@@ -56,18 +62,17 @@ const handleDropboxCall = async (item: GalleryItemProps) => {
       ? item.link.slice(item.link.lastIndexOf("/") + 1)
       : item.text + item.link.slice(item.link.lastIndexOf("."));
   const path = `/applemint/${fileName}`;
-  console.log(path);
 
-  const res = await fetch(`${apiUrl}/dropbox?path=${path}&url=${item.link}`);
-  const json = await res.json();
-  return json;
+  // const res = await fetch(`${apiUrl}/dropbox?path=${path}&url=${item.link}`);
+  // const json = await res.json();
+  // return json;
+
+  return await dropboxCall(item.link, path);
 };
 
 const GalleryInfo: NextPage = () => {
   const { data } = useQuery("galleryInfo", async () => {
-    const res = await fetch(`${apiUrl}/collection/info/gallery`);
-    const json = await res.json();
-    return json;
+    return await getCollectionInfoCall("gallery");
   });
   return (
     <div id="info_breadcumb" className="flex items-end">
