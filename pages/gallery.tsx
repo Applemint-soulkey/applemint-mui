@@ -16,9 +16,10 @@ import {
 import { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import {
+  QueryClient,
   useInfiniteQuery,
   useMutation,
   useQuery,
@@ -86,12 +87,107 @@ const GalleryInfo: NextPage = () => {
   );
 };
 
+// Image List Item
+const GalleryItem: NextPage<{
+  item: GalleryItemProps;
+  queryClient: QueryClient;
+  setCurrentItem: Dispatch<SetStateAction<GalleryItemProps | undefined>>;
+  setDialogOpen: Dispatch<SetStateAction<boolean>>;
+}> = ({ item, queryClient, setCurrentItem, setDialogOpen }) => {
+  const showThumbnail = useRecoilValue(showThumbnailState);
+  const [isDeleteProgress, setIsDeleteProgress] = useState(false);
+
+  // Delete Mutation
+  const deleteMutation = useMutation(
+    async (itemId: string) => await deleteCall(itemId, "gallery"),
+    {
+      onMutate: () => {
+        setIsDeleteProgress(true);
+        queryClient.invalidateQueries("galleryItems");
+        queryClient.invalidateQueries("galleryInfo");
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries("galleryItems");
+        queryClient.invalidateQueries("galleryInfo");
+        setIsDeleteProgress(false);
+      },
+      onSuccess: () => {
+        console.log("delete success");
+        queryClient.invalidateQueries("galleryInfo");
+        queryClient.invalidateQueries("galleryItems");
+      },
+    }
+  );
+
+  return isDeleteProgress ? (
+    <ImageListItem>
+      <CircularProgress />
+    </ImageListItem>
+  ) : (
+    <ImageListItem
+      key={item.link}
+      className="min-h-fit max-h-48 cursor-pointer"
+    >
+      {showThumbnail ? (
+        item.link.includes(".mp4") ? (
+          <video
+            src={item.link}
+            autoPlay
+            muted
+            controls={false}
+            className="w-full h-full"
+            onClick={() => {
+              setCurrentItem(item);
+              setDialogOpen(true);
+            }}
+          />
+        ) : (
+          <img
+            src={item.link}
+            loading="lazy"
+            className="bg-white overflow-hidden"
+            onClick={() => {
+              setCurrentItem(item);
+              setDialogOpen(true);
+            }}
+          />
+        )
+      ) : (
+        <Image
+          src="/image_placeholder.jpg"
+          width={128}
+          height={128}
+          layout="responsive"
+          onClick={() => {
+            setCurrentItem(item);
+            setDialogOpen(true);
+          }}
+        />
+      )}
+      <ImageListItemBar
+        title={item.text === "" ? "Untitled" : item.text}
+        subtitle={item.link}
+        actionIcon={
+          <IconButton
+            color="primary"
+            aria-label={`info about ${item.text}`}
+            onClick={() => {
+              deleteMutation.mutate(item.id);
+            }}
+          >
+            <DeleteIcon />
+          </IconButton>
+        }
+      />
+    </ImageListItem>
+  );
+};
+
 const Gallery: NextPage<{}> = () => {
   const { ref, inView } = useInView();
   const [open, setOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState<GalleryItemProps>();
   const [dropboxSnackbarOpen, setDropboxSnackbarOpen] = useState(false);
-  const showThumbnail = useRecoilValue(showThumbnailState);
   const galleryColumnCount = useRecoilValue(galleryColumnCountState);
 
   const handleSnackbarClose = (
@@ -121,90 +217,12 @@ const Gallery: NextPage<{}> = () => {
     }
   );
 
-  // Delete Mutation
-  const deleteMutation = useMutation(
-    (itemId: string) => deleteCall(itemId, "gallery"),
-    {
-      onSuccess: () => {
-        console.log("delete success");
-        queryClient.invalidateQueries("galleryInfo");
-        queryClient.invalidateQueries("galleryItems");
-      },
-    }
-  );
-
   // Set Ref for Scrolling
   useEffect(() => {
     if (inView) {
       fetchNextPage();
     }
   }, [inView]);
-
-  // Image List Item
-  const GalleryItem: NextPage<{ item: GalleryItemProps }> = ({ item }) => {
-    const [isDeleteProgress, setIsDeleteProgress] = useState(false);
-
-    return isDeleteProgress ? (
-      <ImageListItem>
-        <CircularProgress />
-      </ImageListItem>
-    ) : (
-      <ImageListItem key={item.link} className="max-h-48">
-        {showThumbnail ? (
-          item.link.includes(".mp4") ? (
-            <video
-              src={item.link}
-              autoPlay
-              muted
-              controls={false}
-              className="w-full h-full"
-              onClick={() => {
-                setCurrentItem(item);
-                setOpen(true);
-              }}
-            />
-          ) : (
-            <img
-              src={item.link}
-              loading="lazy"
-              className="bg-white overflow-hidden"
-              onClick={() => {
-                setCurrentItem(item);
-                setOpen(true);
-              }}
-            />
-          )
-        ) : (
-          <Image
-            src="/image_placeholder.jpg"
-            width={128}
-            height={128}
-            layout="responsive"
-            onClick={() => {
-              setCurrentItem(item);
-              setOpen(true);
-            }}
-          />
-        )}
-        <ImageListItemBar
-          title={item.text === "" ? "Untitled" : item.text}
-          subtitle={item.link}
-          actionIcon={
-            <IconButton
-              color="secondary"
-              aria-label={`info about ${item.text}`}
-              onClick={() => {
-                setIsDeleteProgress(true);
-                deleteMutation.mutate(item.id);
-              }}
-            >
-              <DeleteIcon />
-            </IconButton>
-          }
-        />
-      </ImageListItem>
-    );
-  };
 
   const GalleryDetailDialog: NextPage = () => {
     return (
@@ -275,8 +293,16 @@ const Gallery: NextPage<{}> = () => {
           <>
             <ImageList cols={galleryColumnCount}>
               {data!!.pages.map((page) =>
-                page?.data.map((item: GalleryItemProps) => {
-                  return <GalleryItem key={item.link} item={item} />;
+                page?.data.map((item: GalleryItemProps, index: number) => {
+                  return (
+                    <GalleryItem
+                      key={index}
+                      item={item}
+                      queryClient={queryClient}
+                      setCurrentItem={setCurrentItem}
+                      setDialogOpen={setOpen}
+                    />
+                  );
                 })
               )}
             </ImageList>
