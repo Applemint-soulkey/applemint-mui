@@ -141,10 +141,24 @@ const GalleryItem: NextPage<{
               setDialogOpen(true);
             }}
           />
+        ) : // imgur image link optimization
+        item.link.includes("i.imgur.com") ? (
+          <Image
+            src={item.link}
+            alt={item.text}
+            width={200}
+            height={200}
+            layout="intrinsic"
+            objectFit="cover"
+            onClick={() => {
+              setCurrentItem(item);
+              setDialogOpen(true);
+            }}
+          />
         ) : (
           <img
             src={item.link}
-            loading="lazy"
+            alt={item.text}
             className="bg-white overflow-hidden"
             onClick={() => {
               setCurrentItem(item);
