@@ -21,9 +21,21 @@ const RaindropModal: NextPage<{
   setRaindropOpen: Dispatch<SetStateAction<boolean>>;
   data: ItemProps;
 }> = ({ raindropOpen, setRaindropOpen, data }) => {
+  // Set Hooks for Raindrop Dialog
   const [targetCollection, setTargetCollection] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const raindropCollections = useRecoilValue(raindropCollectionListState);
+  const OriginTextContent = data.text_content;
+  const [textContent, setTextContent] = useState(OriginTextContent);
+
+  // Handle the user input
+  const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.value.length > 0) {
+      setTextContent(event.target.value);
+    } else {
+      setTextContent(OriginTextContent);
+    }
+  };
   const handleClose = () => setRaindropOpen(false);
   const handleCollectionChange = (event: {
     target: { value: SetStateAction<string> };
@@ -36,8 +48,12 @@ const RaindropModal: NextPage<{
       (collection: { title: string; id: string }) =>
         collection.title === targetCollection
     )?.id;
+
+    let raindropItem: ItemProps = structuredClone(data);
+    raindropItem.text_content = textContent;
+
     if (collectionId) {
-      await makeRaindropCall(data, collectionId);
+      await makeRaindropCall(raindropItem, collectionId);
     } else {
       //show error
     }
@@ -74,7 +90,11 @@ const RaindropModal: NextPage<{
         <>
           <DialogContent>
             <Box className="flex flex-col gap-3 mt-3 sm:w-96">
-              <TextField label="Title" value={data.text_content} />
+              <TextField
+                label="Title"
+                defaultValue={data.text_content}
+                onChange={handleTextChange}
+              />
               <TextField label="URL" fullWidth disabled value={data.url} />
               <Select
                 value={targetCollection}
