@@ -26,6 +26,8 @@ const BookmarkModal: NextPage<{
   const [bookmarkPath, setBookmarkPath] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isPathError, setPathError] = useState(false);
+  const OriginTextContent = itemData.text_content;
+  const [textContent, setTextContent] = useState(OriginTextContent);
 
   // Set Query for Bookmark List
   const { data } = useQuery("bookmark_list", getBookmarkListCall, {});
@@ -36,7 +38,9 @@ const BookmarkModal: NextPage<{
   // Set Query for Bookmark Action
   const bookmarkMutation = useMutation(
     () => {
-      return sendToBookmarkCall(itemData, bookmarkPath, collection_origin);
+      let bookmarkItem: ItemProps = structuredClone(itemData);
+      bookmarkItem.text_content = textContent;
+      return sendToBookmarkCall(bookmarkItem, bookmarkPath, collection_origin);
     },
     {
       onMutate: () => {
@@ -51,11 +55,20 @@ const BookmarkModal: NextPage<{
   );
 
   // Handle the user input
+  const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.value.length > 0) {
+      setTextContent(event.target.value);
+    } else {
+      setTextContent(OriginTextContent);
+    }
+  };
+
   const handleClose = () => {
     setBookmarkOpen(false);
     setIsLoading(false);
     setPathError(false);
   };
+
   const handleSubmit = () => {
     console.log(bookmarkPath);
     if (bookmarkPath === "") {
@@ -79,7 +92,8 @@ const BookmarkModal: NextPage<{
               <TextField
                 className="w-fill"
                 label="Title"
-                value={itemData.text_content}
+                defaultValue={itemData.text_content}
+                onChange={handleTextChange}
               />
               <TextField
                 className="w-fill"
