@@ -11,7 +11,7 @@ import {
   TextField,
 } from "@mui/material";
 import { NextPage } from "next";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { getBookmarkListCall, ItemProps, sendToBookmarkCall } from "../api";
 
@@ -34,6 +34,10 @@ const BookmarkModal: NextPage<{
   const list = data?.map((item: { id: string; Path: string }) => {
     return item.Path;
   });
+
+  useEffect(() => {
+    setTextContent(OriginTextContent);
+  }, [OriginTextContent]);
 
   // Set Query for Bookmark Action
   const bookmarkMutation = useMutation(

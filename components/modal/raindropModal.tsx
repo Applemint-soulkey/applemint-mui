@@ -28,6 +28,10 @@ const RaindropModal: NextPage<{
   const OriginTextContent = data.text_content;
   const [textContent, setTextContent] = useState(OriginTextContent);
 
+  useEffect(() => {
+    setTextContent(OriginTextContent);
+  }, [OriginTextContent]);
+
   // Handle the user input
   const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.value.length > 0) {
