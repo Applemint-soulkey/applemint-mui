@@ -48,8 +48,6 @@ type GalleryItemProps = {
 };
 
 const handleGalleryItemsFetch = async ({ pageParam = 0 }) => {
-  // const res = await fetch(`${apiUrl}/gallery?cursor=${pageParam}`);
-  // const json = await res.json();
   const json = await galleryItemsCall(pageParam);
   return {
     data: json.items,
@@ -63,10 +61,6 @@ const handleDropboxCall = async (item: GalleryItemProps) => {
       ? item.link.slice(item.link.lastIndexOf("/") + 1)
       : item.text + item.link.slice(item.link.lastIndexOf("."));
   const path = `/applemint/${fileName}`;
-
-  // const res = await fetch(`${apiUrl}/dropbox?path=${path}&url=${item.link}`);
-  // const json = await res.json();
-  // return json;
 
   return await dropboxCall(item.link, path);
 };
