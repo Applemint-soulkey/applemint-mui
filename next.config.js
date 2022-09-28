@@ -3,11 +3,12 @@ const nextConfig = {
   reactStrictMode: true,
   images: {
     domains: ["i.imgur.com"],
+    unoptimized: true,
   },
   experimental: {
     images: {
       unoptimized: true,
-    }
+    },
   },
 };
 
