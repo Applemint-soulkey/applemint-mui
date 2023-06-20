@@ -6,6 +6,8 @@ module.exports = {
   theme: {
     colors: {
       primary: "#00bcd4",
+      white: "#ffffff",
+      black: "#000000",
     },
     fontFamily: {
       pretend: ["Pretendard", "sans-serif"],
