@@ -32,6 +32,7 @@ import {
 } from "../store/common";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
+  clearCollectionCall,
   deleteCall,
   dropboxCall,
   galleryItemsCall,
@@ -70,12 +71,21 @@ const GalleryInfo: NextPage = () => {
     return await getCollectionInfoCall("gallery");
   });
   return (
-    <div id="info_breadcumb" className="flex items-end">
-      <Typography variant="h6" className="mb-1">
-        Items:{" "}
+    <div id="info_breadcumb" className="flex items-center ">
+      <Typography variant="h6" className="mb-1 flex gap-1">
+        Items:
         <span id="item_count" className="font-bold">
           {data?.totalCount}
         </span>
+        <Button
+          className="bg-primary text-white hover:text-primary"
+          onClick={async () => {
+            let result = await clearCollectionCall("gallery");
+            console.log(result);
+          }}
+        >
+          Clear All
+        </Button>
       </Typography>
     </div>
   );
